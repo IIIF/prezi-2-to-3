@@ -12,6 +12,7 @@ class Upgrader(object):
 		self.crawl = flags.get("crawl", False)
 		self.description_is_metadata = flags.get("desc_2_md", True)
 		self.allow_extensions = flags.get("ext_ok", False)
+		self.default_lang = flags.get("default_lang", "@none")
 
 		self.language_properties = ['label', 'attribution', 'summary']
 
@@ -23,16 +24,21 @@ class Upgrader(object):
 			"related", "rendering", "service", "seeAlso", "within",
 			"start", "includes", "items", "structures", "annotations"]
 
-		self.annotation_properties = ['motivation', 'stylesheet']
-
 		self.set_properties = [
 			"thumbnail", "rights", "logo", "behavior",
 			"related", "rendering", "service", "seeAlso", "within"
 		]
 
-		self.object_properties = [
-			"thumbnail", "logo", "related", "rendering", "service", "rights", "seeAlso", "within"]
-		self.single_object_properties = ["start", "includes"]
+		self.object_property_types = {
+			"thumbnail": "Image", 
+			"logo":"Image", 
+			"related": "", 
+			"rendering": "", 
+			"service": "Service", 
+			"rights": "", 
+			"seeAlso": "Dataset", 
+			"within": ""
+		}
 
 		self.profile_map = {
 			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level0": "level0",
@@ -50,22 +56,9 @@ class Upgrader(object):
 			"http://iiif.io/api/auth/1/external": "external"	
 		}
 		
-		self.property_map = {
-			'@id': 'id',
-			'@type': 'type',
-			'startCanvas': 'start',
-			'contentLayer': 'includes',
-			'license': 'rights',
-			'viewingHint': 'behavior',
-			'sequences': 'items',
-			'resource': 'body',
-			'on': 'target',
-			'full': 'source',
-			'style': 'styleClass'
-		}
 
-		self.id_type_cache = {}
-
+		#'full': 'source',
+		#'style': 'styleClass'
 
 
 	def retrieve_resource(self, uri):
@@ -96,118 +89,46 @@ class Upgrader(object):
 				new[k] = v
 		return new
 
-	def property_names(self, what):
-		new = {}
-		for (k,v) in self.property_map.items():
-			if what.has_key(k):
-				new[v] = what[k]
-				del what[k]
-
-		if what.has_key('description'):
-			if self.description_is_metadata:
-				# find where metadata is now
-				md = what.get('metadata', [])
-				if md:
-					del what['metadata']
-				md.append({"label": u"Description", "value": what['description']})
-				new['metadata'] = md
+	def fix_service_type(self, what):
+		# manage known service contexts
+		# assumes an answer to https://github.com/IIIF/api/issues/1352
+		if '@context' in what:
+			ctxt = what['@context']
+			if ctxt == "http://iiif.io/api/image/2/context.json":
+				what['type'] = "ImageService2"
+				del what['@context']
+				return what				
+			elif ctxt == "http://iiif.io/api/image/1/context.json":
+				what['type'] = "ImageService1"			
+				del what['@context']
+				return what
+			elif ctxt in ["http://iiif.io/api/search/1/context.json",
+				"http://iiif.io/api/auth/1/context.json"]:
+				# handle below in profiles
+				pass
 			else:
-				# rename to summary
-				new['summary'] = what['description']
-			del what['description']
+				print "Unknown context: %s" % ctxt
 
-		if 'type' in new:
-			# merge members, collections, manifests on collection
-			if new['type'] == 'sc:Collection':
-				nl = []
-				mfsts = what.get('manifests', [])		
-				colls = what.get('collections', [])
-				members = what.get('members', [])
-				nl.extend(colls)
-				nl.extend(mfsts)
-				nl.extend(members)
-				if nl:
-					new['items'] = nl
-				if mfsts:
-					del what['manifests']
-				if colls:
-					del what['collections']
-				if members:
-					del what['members']
+		if 'profile' in what:
+			# Auth: CookieService1 , TokenService1
+			p = what['profile']
+			if profile in [
+				"http://iiif.io/api/auth/1/kiosk",
+				"http://iiif.io/api/auth/1/login",
+				"http://iiif.io/api/auth/1/clickthrough",
+				"http://iiif.io/api/auth/1/external"]:
+				what['type'] = 'AuthCookieService1'
+			elif profile == "http://iiif.io/api/auth/1/token":
+				what['type'] = 'AuthTokenService1'
+			elif profile == "http://iiif.io/api/search/1/search":
+				what['type'] = "SearchService1"
+			elif profile == "http://iiif.io/api/search/1/autocomplete":
+				what['type'] = "AutoCompleteService1"
+		return what
 
-			# merge members, canvases, ranges on range
-			elif new['type'] == 'sc:Range':
-				nl = []
-				ranges = what.get('ranges', [])		
-				canvases = what.get('canvases', [])
-				members = what.get('members', [])
-				nl.extend(ranges)
-				nl.extend(canvases)
-				nl.extend(members)
-				if nl:
-					new['items'] = nl
-				if ranges:
-					del what['ranges']
-				if canvases:
-					del what['canvases']
-				if members:
-					del what['members']		
-
-			elif new['type'] == 'oa:Annotation':
-				for p in self.annotation_properties:
-					if what.has_key(p):
-						new[p] = what[p]
-						del what[p]
-			elif new['type'] == 'oa:Choice':
-				newl = []
-				if what.has_key('default'):
-					newl.append(what['default'])
-					del what['default']
-				if what.has_key('item'):
-					v = what['item']
-					if type(v) != list:
-						v = [v]
-					newl.extend(v)
-					del what['item']
-				new['items'] = newl
-			elif new['type'] == 'oa:CssStyle' or 'oa:CssStyle' in new['type']:
-				new['type'] = "CssStylesheet"
-				if "chars" in what:
-					new['value'] = what['chars']
-					del what['chars']
-
-		if what.has_key('canvases'):
-			# on a Sequence
-			new['items'] = what['canvases']
-			del what['canvases']
-
-		# images -> items, with extra structure
-		if what.has_key('images'):
-			newl = {'type': 'AnnotationPage', 'items': []}
-			for anno in what['images']:
-				newl['items'].append(anno)
-			new['items'] = [newl]
-			del what['images']
-
-		# otherContent goes to either annotations or items, depending
-		# on motivation of the Annotation :/
-		if what.has_key('otherContent'):
-			# XXX urgh
-			pass
-
-
-		for p in self.all_properties:
-			if what.has_key(p):
-				new[p] = what[p]
-				del what[p]
-
-		if not self.allow_extensions and what:
-			raise ValueError("unable to handle keys: %s on %s" % (what.keys(), new))
-
-		return new
-
-	def type_names(self, what):
-		t = what.get('type', '')
+	def fix_type(self, what):
+		# Called from process_resource so we can switch
+		t = what.get('@type', '')
 		if t:
 			if t.startswith('sc:'):
 				t = t.replace('sc:', '')
@@ -220,23 +141,17 @@ class Upgrader(object):
 			elif t == "AnnotationList":
 				t = "AnnotationPage"
 			what['type'] = t
+			del what['@type']
+		else:
+			# Upgrade service types based on contexts & profiles
+			what = self.fix_service_type(what)
 		return what
-
-	def motivation_names(self, what):
-		m = what.get('motivation', '')
-		if m:
-			if m.startswith('sc:'):
-				m = m.replace('sc:', '')
-			elif m.startswith('oa:'):
-				m = m.replace('oa:', '')
-			what['motivation'] = m
-		return what
-
 
 	def do_language_map(self, value):
 		new = {}
+		defl = self.default_lang
 		if type(value) == unicode:
-			new['@none'] = [value]
+			new[defl] = [value]
 		elif type(value) == dict:
 			try:
 				new[value['@language']].append(value['@value'])
@@ -246,9 +161,9 @@ class Upgrader(object):
 			for i in value:
 				if type(i) == unicode:
 					try:
-						new['@none'].append(i)
+						new[defl].append(i)
 					except:
-						new['@none'] = [i]
+						new[defl] = [i]
 				elif type(i) == dict:
 					try:
 						new[i['@language']].append(i['@value'])
@@ -257,7 +172,7 @@ class Upgrader(object):
 		return new
 
 
-	def language_map(self, what):
+	def fix_languages(self, what):
 		for p in self.language_properties:
 			if p in what:
 				try:
@@ -274,7 +189,7 @@ class Upgrader(object):
 			what['metadata'] = newmd
 		return what
 
-	def container_set(self, what):
+	def fix_sets(self, what):
 		for p in self.set_properties:
 			if p in what:
 				v = what[p]
@@ -283,82 +198,241 @@ class Upgrader(object):
 				what[p] = v
 		return what
 
-	def objects(self, what):
-		for p in self.object_properties:
+	def fix_objects(self, what):
+		for (p,typ) in self.object_property_types.items():
 			if p in what:
 				new = []
 				for v in what[p]:
-					if type(v) == dict:
-						new.append(v)
+					if not type(v) == dict:
+						v = {'id':v}
+					if not 'type' in v and typ:
+						v['type'] = typ
 					else:
-						new.append({'id': v})
+						print "Don't know type for %s: %s" % (p, what)
+					new.append(v)
 				what[p] = new
-		for p in self.single_object_properties:
-			if p in what:
-				v = what[p]
-				if type(v) == dict:
-					what[p] = v
-				else:
-					if p == 'start':
-						pt = "Canvas"
-					elif p == 'includes':
-						pt = "AnnotationCollection"
-					what[p] = {'id': v, 'type': pt}
-
 		return what
 
-	def embedded_context(self, what):
-		if "@context" in what:
-			# manage known service contexts
-			ctxt = what['@context']
-			if ctxt == "http://iiif.io/api/image/2/context.json":
-				what['type'] = "ImageService2"
-			elif ctxt == "http://iiif.io/api/image/1/context.json":
-				what['type'] = "ImageService2"
-			elif ctxt == "http://iiif.io/api/search/1/context.json":
-				what['type'] = "SearchService1"				
+	def property_names(self, what):
+
+		if 'type' in new:
+			if new['type'] == 'oa:CssStyle' or 'oa:CssStyle' in new['type']:
+				new['type'] = "CssStylesheet"
+				if "chars" in what:
+					new['value'] = what['chars']
+					del what['chars']
+
+
+
+	def process_generic(self, what):
+		if '@id' in what:
+			what['id'] = what['@id']
+			del what['@id']
+		# @type already processed
+		if 'license' in what:
+			what['rights'] = what['license']
+			del what['license']
+		if 'viewingHint' in what:
+			what['behavior'] = what['viewingHint']
+			del what['viewingHint']
+		if 'description' in what:
+			if self.description_is_metadata:
+				# Put it in metadata
+				md = what.get('metadata', [])
+				# NB this must happen before fix_languages
+				md.append({"label": u"Description", "value": what['description']})
+				what['metadata'] = md
 			else:
-				print "Cannot handle context: %s" % ctxt
-				raise ValueError()
-			del what['@context']
-		return what
+				# rename to summary
+				what['summary'] = what['description']
+			del what['description']
 
-	def profiles(self, what):
 		if "profile" in what:
 			p = what['profile']
-			if p == "http://iiif.io/api/search/1/autocomplete":
-				what['type'] = "AutoCompleteService1"
-				del what['profile']
-			elif p == "http://iiif.io/api/search/1/search":
-				what['type'] = "SearchService1"
-				del what['profile']
-			elif p == "http://iiif.io/api/auth/1/token":
-				what['type'] = "TokenService1"
-				del what['profile']
-			elif p in self.profile_map:
+			if p in self.profile_map:
 				what['profile'] = self.profile_map[p]
 			else:
 				print "Unrecognized profile: %s (continuing)" % p
-		return what
 
-	def ranges(self, what):
-		if "structures" in what:
-			rngs = what['structures']
-			# unflatten, kill 'top'
-			new = []
-			rids = {}
-			for r in rngs:
-
-				print repr(r)
-				rid = r['id']
-				rids[rid] = r
-
-
-
-
+		what = self.fix_languages(what)
+		what = self.fix_sets(what)
+		what = self.fix_objects(what)
 
 		return what
 
+	def process_collection(self, what):
+		what = self.process_generic(what)
+
+		nl = []
+		colls = what.get('collections', [])
+		for c in colls:
+			if not type(c) == dict:
+				c = {'id': c, 'type': 'Collection'}
+			elif not 'type' in c:
+				c['type'] = 'Collection'
+			nl.append(c)
+		mfsts = what.get('manifests', [])		
+		for m in mfsts:
+			if not type(m) == dict:
+				m = {'id': m, 'type': 'Manifest'}
+			elif not 'type' in m:
+				m['type'] = 'Manifest'
+			nl.append(m)			
+		members = what.get('members', [])
+		nl.extend(members)
+
+		if nl:
+			what['items'] = nl
+		if mfsts:
+			del what['manifests']
+		if colls:
+			del what['collections']
+		if members:
+			del what['members']
+
+		return what
+
+	def process_manifest(self, what):
+		what = self.process_generic(what)
+
+		if 'startCanvas' in what:
+			v = what['startCanvas']
+			if type(v) != dict:
+				what['start'] = {'id': v, 'type': "Canvas"}
+			else:
+				v['type'] = "Canvas"
+				what['start'] = v
+			del what['startCanvas']
+
+		# Need to test as might not be top object
+		if 'sequences' in what:
+			what['items'] = what['sequences']
+			del what['sequences']
+
+		return what
+
+	def process_sequence(self, what):
+		what = self.process_generic(what)
+		what['items'] = what['canvases']
+		del what['canvases']
+
+		if 'startCanvas' in what:
+			v = what['startCanvas']
+			if type(v) != dict:
+				what['start'] = {'id': v, 'type': "Canvas"}
+			else:
+				v['type'] = "Canvas"
+				what['start'] = v
+			del what['startCanvas']
+
+		return what
+
+	def process_canvas(self, what):
+		what = self.process_generic(what)
+
+		newl = {'type': 'AnnotationPage', 'items': []}
+		for anno in what['images']:
+			newl['items'].append(anno)
+		what['items'] = [newl]
+		del what['images']
+
+		return what
+
+	def process_annotationpage(self, what):
+		what = self.process_generic(what)
+		return what
+
+	def process_annotationcollection(self, what):
+		what = self.process_generic(what)
+		return what
+
+	def process_annotation(self, what):
+		what = self.process_generic(what)
+
+		if 'on' in what:
+			what['target'] = what['on']
+			del what['on']
+		if 'resource' in what:
+			what['body'] = what['resource']
+			del what['resource']
+
+		m = what.get('motivation', '')
+		if m:
+			if m.startswith('sc:'):
+				m = m.replace('sc:', '')
+			elif m.startswith('oa:'):
+				m = m.replace('oa:', '')
+			what['motivation'] = m
+
+		return what
+
+	def process_range(self, what):
+		what = self.process_generic(what)
+
+
+		nl = []
+		rngs = what.get('ranges', [])
+		for r in rngs:
+			if not type(r) == dict:
+				r = {'id': r, 'type': 'Range'}
+			elif not 'type' in r:
+				r['type'] = 'Range'
+			nl.append(r)
+		cvs = what.get('canvases', [])		
+		for c in cvs:
+			if not type(c) == dict:
+				c = {'id': c, 'type': 'Canvas'}
+			elif not 'type' in c:
+				c['type'] = 'Canvas'
+			nl.append(c)			
+		members = what.get('members', [])
+		nl.extend(members)
+
+		if rngs:
+			del what['ranges']
+		if cvs:
+			del what['canvases']
+		if members:
+			del what['members']
+
+		if nl:
+			# XXX Process for hierarchy
+
+
+			what['items'] = nl
+
+		# contentLayer
+		if 'contentLayer' in what:
+			v = what['contentLayer']
+			if type(v) != dict:
+				what['includes'] = {'id': v, 'type': "AnnotationCollection"}
+			else:
+				v['type'] = "AnnotationCollection"
+				what['includes'] = v
+			del what['contentLayer']
+
+		# Remove redundant 'top' Range
+		if 'top' in what['behavior']:
+			what['behavior'].remove('top')
+
+		return what
+
+	def process_choice(self, what):
+		what = self.process_generic(what)
+
+		newl = []
+		if what.has_key('default'):
+			newl.append(what['default'])
+			del what['default']
+		if what.has_key('item'):
+			v = what['item']
+			if type(v) != list:
+				v = [v]
+			newl.extend(v)
+			del what['item']
+		new['items'] = newl
+
+		return what
 
 	def process_resource(self, what, top=False):
 
@@ -367,28 +441,19 @@ class Upgrader(object):
 			orig_context = what.get("@context", "")
 			# could be a list with extensions etc
 			del what['@context']
-		else:
-			what = self.embedded_context(what)
 
-		what = self.property_names(what)
-		what = self.type_names(what)
-		what = self.motivation_names(what)
-		what = self.profiles(what)
-		what = self.language_map(what)
-		what = self.container_set(what)
-		what = self.objects(what)		
+		# First update types, so we can switch on it
+		what = self.fix_type(what)
+		typ = what.get('type', '')
+		fn = getattr(self, 'process_%s' % typ.lower(), self.process_generic)
 
-		if 'id' in what:
-			self.id_type_cache[what['id']] = what.get('type', '')
-
+		what = fn(what)
 		what = self.traverse(what)
-		what = self.ranges(what)
-
-
 
 		if top:
+			# Add back in the v3 context
 			if orig_context != "http://iiif.io/api/presentation/2/context.json":
-				# uhh...
+				# XXX process extensions
 				pass
 			else:
 				what['@context'] = [
@@ -401,19 +466,26 @@ class Upgrader(object):
 		what = self.retrieve_resource(uri)
 		return self.process_resource(what, top)
 
+	def process_cached(self, fn, top=True):
+		fh = file(fn)
+		data = fh.read()
+		fh.close()
+		what = json.loads(data)
+		return self.process_resource(what, top)
+
 
 if __name__ == "__main__":
 
 	upgrader = Upgrader(flags={"ext_ok": False})
 
-	# Process all of the fixtures
-	uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
-	uri = "http://iiif.io/api/presentation/2.1/example/fixtures/65/manifest.json"
-	uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
-	uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
+	#results = upgrader.process_cached('/Users/rsanderson/Downloads/harvard_ranges_manifest.json')
 
-
+	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
+	uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
+	#uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
+	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
 	results = upgrader.process_uri(uri, True)
+
 	print json.dumps(results, indent=2, sort_keys=True)
 
 
