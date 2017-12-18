@@ -13,6 +13,8 @@ class Upgrader(object):
 		self.description_is_metadata = flags.get("desc_2_md", True)
 		self.allow_extensions = flags.get("ext_ok", False)
 		self.default_lang = flags.get("default_lang", "@none")
+		self.dereference_links = flags.get("deref_links", True)
+
 
 		self.language_properties = ['label', 'attribution', 'summary']
 
@@ -23,6 +25,10 @@ class Upgrader(object):
 			"height", "width", "duration", "viewingDirection", "behavior",
 			"related", "rendering", "service", "seeAlso", "within",
 			"start", "includes", "items", "structures", "annotations"]
+
+		self.annotation_properties = [
+			"body", "target", "motivation"
+		]
 
 		self.set_properties = [
 			"thumbnail", "rights", "logo", "behavior",
@@ -56,6 +62,16 @@ class Upgrader(object):
 			"http://iiif.io/api/auth/1/external": "external"	
 		}
 		
+		self.content_type_map = {
+			"image": "Image",
+			"audio": "Sound",
+			"video": "Video",
+			"application/pdf": "Text",
+			"text/html": "Text",
+			"text/plain": "Text",
+			"application/xml": "Dataset",
+			"text/xml": "Dataset"
+		}
 
 		#'full': 'source',
 		#'style': 'styleClass'
@@ -87,6 +103,9 @@ class Upgrader(object):
 				new[k] = newl
 			else:
 				new[k] = v
+			if not k in self.all_properties and not k in self.annotation_properties:
+				print "Unknown property: %s" % k
+
 		return new
 
 	def fix_service_type(self, what):
@@ -207,8 +226,35 @@ class Upgrader(object):
 						v = {'id':v}
 					if not 'type' in v and typ:
 						v['type'] = typ
-					else:
-						print "Don't know type for %s: %s" % (p, what)
+					elif self.deref_links:
+						# do a HEAD on the resource and look at Content-Type
+						try:
+							h = requests.head(v['id'])
+						except:
+							# dummy URI
+							h = None
+						if h and h.status_code == 200:
+							ct = h.headers['content-type']
+							ct = ct.lower()
+							first = ct.split('/')[0]
+
+							if first in self.content_type_map:
+								v['type'] = self.content_type_map[first]
+							elif ct in self.content_type_map:
+								v['type'] = self.content_type_map[ct]
+							elif ct.startswith("application/json") or \
+								ct.startswith("application/ld+json"):
+								# Try and fetch and look for a type!
+								fh = requests.get(v['id'])
+								data = fh.json()
+								if 'type' in data:
+									v['type'] = data['type']
+								elif '@type' in data:
+									data = self.fix_type(data)
+									v['type'] = data['type']
+
+						if not 'type' in v:
+							print "Don't know type for %s: %s" % (p, what[p])
 					new.append(v)
 				what[p] = new
 		return what
