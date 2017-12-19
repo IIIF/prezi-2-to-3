@@ -13,7 +13,7 @@ class Upgrader(object):
 		self.description_is_metadata = flags.get("desc_2_md", True)
 		self.allow_extensions = flags.get("ext_ok", False)
 		self.default_lang = flags.get("default_lang", "@none")
-		self.dereference_links = flags.get("deref_links", True)
+		self.deref_links = flags.get("deref_links", True)
 
 
 		self.language_properties = ['label', 'attribution', 'summary']
@@ -89,6 +89,10 @@ class Upgrader(object):
 				continue
 			elif k == 'metadata':
 				# also handled by language_map
+				new[k] = v
+				continue
+			elif k == 'structures':
+				# processed by Manifest directly to unflatten
 				new[k] = v
 				continue
 			if type(v) == dict:
@@ -259,17 +263,6 @@ class Upgrader(object):
 				what[p] = new
 		return what
 
-	def property_names(self, what):
-
-		if 'type' in new:
-			if new['type'] == 'oa:CssStyle' or 'oa:CssStyle' in new['type']:
-				new['type'] = "CssStylesheet"
-				if "chars" in what:
-					new['value'] = what['chars']
-					del what['chars']
-
-
-
 	def process_generic(self, what):
 		if '@id' in what:
 			what['id'] = what['@id']
@@ -355,6 +348,38 @@ class Upgrader(object):
 			what['items'] = what['sequences']
 			del what['sequences']
 
+		if 'structures' in what:
+			# Need to process from here, to have access to all info
+			# needed to unflatten them
+			rhash = {}
+			tops = []
+			for r in what['structures']:
+				new = self.fix_type(r)
+				new = self.process_range(new)				
+				rhash[new['id']] = new
+				tops.append(new['id'])
+
+			for rng in what['structures']:
+				if 'within' in rng:
+					tops.remove(rng['id'])
+					parid = rng['within'][0]['id']
+					del rng['within']
+					parent = rhash.get(parid, None)
+					if not parent:
+						# Just drop it on the floor?
+						print "Unknown parent range: %s" % parid
+					else:
+						# e.g. Harvard has massive duplication of canvases
+						# not wrong, but don't need it any more
+						for child in rng['items']:
+							for sibling in parent['items']:
+								if child['id'] == sibling['id']:
+									parent['items'].remove(sibling)
+									break
+						parent['items'].append(rng)
+			what['structures'] = []
+			for t in tops:
+				what['structures'].append(rhash[t])
 		return what
 
 	def process_sequence(self, what):
@@ -415,7 +440,6 @@ class Upgrader(object):
 	def process_range(self, what):
 		what = self.process_generic(what)
 
-
 		nl = []
 		rngs = what.get('ranges', [])
 		for r in rngs:
@@ -441,11 +465,7 @@ class Upgrader(object):
 		if members:
 			del what['members']
 
-		if nl:
-			# XXX Process for hierarchy
-
-
-			what['items'] = nl
+		what['items'] = nl
 
 		# contentLayer
 		if 'contentLayer' in what:
@@ -458,7 +478,7 @@ class Upgrader(object):
 			del what['contentLayer']
 
 		# Remove redundant 'top' Range
-		if 'top' in what['behavior']:
+		if 'behavior' in what and 'top' in what['behavior']:
 			what['behavior'].remove('top')
 
 		return what
@@ -491,6 +511,10 @@ class Upgrader(object):
 		# First update types, so we can switch on it
 		what = self.fix_type(what)
 		typ = what.get('type', '')
+		if type(typ) == list:
+			# Pick one to do first? 
+			typ = ""
+	
 		fn = getattr(self, 'process_%s' % typ.lower(), self.process_generic)
 
 		what = fn(what)
@@ -522,14 +546,14 @@ class Upgrader(object):
 
 if __name__ == "__main__":
 
-	upgrader = Upgrader(flags={"ext_ok": False})
+	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
 
 	#results = upgrader.process_cached('/Users/rsanderson/Downloads/harvard_ranges_manifest.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
-	uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
+	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
 	#uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
-	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
+	uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
 	results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
@@ -543,13 +567,6 @@ if __name__ == "__main__":
 # Determine which annotations should be items and which annotations
 # -- this is non trivial, but also not common
 
-# Try to add type to content resources
-# -- probably either text or image in 2.x, but might have to bail sometimes
-# This can be hard, and impossible for the examples as they're not real
-
-# Unflatten Ranges
-# Programmatic but code is more involved than single subsitution
-# Question for what to do in case of loops and graphs, if they're found
 
 ### Cardinality Requirements
 # Check all presence of all MUSTs in the spec and maybe bail
