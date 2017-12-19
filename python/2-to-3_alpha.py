@@ -574,15 +574,14 @@ class Upgrader(object):
 
 if __name__ == "__main__":
 
-	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
-
-	#results = upgrader.process_cached('/Users/rsanderson/Downloads/harvard_ranges_manifest.json')
+	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": True})
+	results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
 	#uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
-	uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
-	results = upgrader.process_uri(uri, True)
+	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
+	#results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
 
