@@ -239,6 +239,7 @@ class Upgrader(object):
 							h = None
 						if h and h.status_code == 200:
 							ct = h.headers['content-type']
+							v['format'] = ct  # as we have it...
 							ct = ct.lower()
 							first = ct.split('/')[0]
 
@@ -382,6 +383,52 @@ class Upgrader(object):
 				what['structures'].append(rhash[t])
 		return what
 
+	def process_range(self, what):
+		what = self.process_generic(what)
+
+		nl = []
+		rngs = what.get('ranges', [])
+		for r in rngs:
+			if not type(r) == dict:
+				r = {'id': r, 'type': 'Range'}
+			elif not 'type' in r:
+				r['type'] = 'Range'
+			nl.append(r)
+		cvs = what.get('canvases', [])		
+		for c in cvs:
+			if not type(c) == dict:
+				c = {'id': c, 'type': 'Canvas'}
+			elif not 'type' in c:
+				c['type'] = 'Canvas'
+			nl.append(c)			
+		members = what.get('members', [])
+		nl.extend(members)
+
+		if rngs:
+			del what['ranges']
+		if cvs:
+			del what['canvases']
+		if members:
+			del what['members']
+
+		what['items'] = nl
+
+		# contentLayer
+		if 'contentLayer' in what:
+			v = what['contentLayer']
+			if type(v) != dict:
+				what['includes'] = {'id': v, 'type': "AnnotationCollection"}
+			else:
+				v['type'] = "AnnotationCollection"
+				what['includes'] = v
+			del what['contentLayer']
+
+		# Remove redundant 'top' Range
+		if 'behavior' in what and 'top' in what['behavior']:
+			what['behavior'].remove('top')
+
+		return what
+
 	def process_sequence(self, what):
 		what = self.process_generic(what)
 		what['items'] = what['canvases']
@@ -435,53 +482,34 @@ class Upgrader(object):
 				m = m.replace('oa:', '')
 			what['motivation'] = m
 
-		return what
-
-	def process_range(self, what):
-		what = self.process_generic(what)
-
-		nl = []
-		rngs = what.get('ranges', [])
-		for r in rngs:
-			if not type(r) == dict:
-				r = {'id': r, 'type': 'Range'}
-			elif not 'type' in r:
-				r['type'] = 'Range'
-			nl.append(r)
-		cvs = what.get('canvases', [])		
-		for c in cvs:
-			if not type(c) == dict:
-				c = {'id': c, 'type': 'Canvas'}
-			elif not 'type' in c:
-				c['type'] = 'Canvas'
-			nl.append(c)			
-		members = what.get('members', [])
-		nl.extend(members)
-
-		if rngs:
-			del what['ranges']
-		if cvs:
-			del what['canvases']
-		if members:
-			del what['members']
-
-		what['items'] = nl
-
-		# contentLayer
-		if 'contentLayer' in what:
-			v = what['contentLayer']
-			if type(v) != dict:
-				what['includes'] = {'id': v, 'type': "AnnotationCollection"}
+		if 'stylesheet' in what:
+			ss = what['stylesheet']
+			if type(ss) == dict:
+				ss['@type'] = 'oa:CssStylesheet'
+				if 'chars' in ss:
+					ss['value'] = ss['chars']
+					del ss['chars']
 			else:
-				v['type'] = "AnnotationCollection"
-				what['includes'] = v
-			del what['contentLayer']
-
-		# Remove redundant 'top' Range
-		if 'behavior' in what and 'top' in what['behavior']:
-			what['behavior'].remove('top')
-
+				# Just a link
+				what['stylesheet'] = {'@id': ss, '@type': 'oa:CssStylesheet'}
 		return what
+
+	def process_specificresource(self, what):
+		what = self.process_generic(what)
+		if 'full' in what:
+			# And if not, it's broken...
+			what['source'] = what['full']
+			del what['full']
+		if 'style' in what:
+			what['styleClass'] = what['style']
+			del what['style']
+		return what
+
+	def process_contentastext(self, what):
+		what['type'] = 'TextualBody'
+		what['value'] = what['chars']
+		del what['chars']
+		return what	
 
 	def process_choice(self, what):
 		what = self.process_generic(what)
