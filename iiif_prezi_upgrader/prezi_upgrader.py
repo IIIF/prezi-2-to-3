@@ -435,6 +435,8 @@ class Upgrader(object):
 		# contentLayer
 		if 'contentLayer' in what:
 			v = what['contentLayer']
+			if type(v) == list and len(v) == 1:
+				v = v[0]
 			if type(v) != dict:
 				what['includes'] = {'id': v, 'type': "AnnotationCollection"}
 			else:
@@ -445,6 +447,10 @@ class Upgrader(object):
 		# Remove redundant 'top' Range
 		if 'behavior' in what and 'top' in what['behavior']:
 			what['behavior'].remove('top')
+
+		if 'includes' in what:
+			# single object
+			what['includes'] = self.process_resource(what['includes'])
 
 		return what
 
@@ -468,7 +474,6 @@ class Upgrader(object):
 
 		# XXX process otherContent here before generic grabs it
 
-
 		what = self.process_generic(what)
 
 		if 'images' in what:
@@ -477,6 +482,10 @@ class Upgrader(object):
 				newl['items'].append(anno)
 			what['items'] = [newl]
 			del what['images']
+		return what
+
+	def process_layer(self, what):
+		what = self.process_generic(what)
 		return what
 
 	def process_annotationpage(self, what):
@@ -666,7 +675,7 @@ class Upgrader(object):
 
 if __name__ == "__main__":
 
-	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": True})
+	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
 	# results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
@@ -681,7 +690,10 @@ if __name__ == "__main__":
 	#uri = "http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json"
 	#uri = "https://lbiiif.riksarkivet.se/arkis!R0000004/manifest"
 	#uri = "https://d.lib.ncsu.edu/collections/catalog/nubian-message-1992-11-30/manifest.json"
-	uri = "https://ocr.lib.ncsu.edu/ocr/nu/nubian-message-1992-11-30_0010/nubian-message-1992-11-30_0010-annotation-list-paragraph.json"
+	#uri = "https://ocr.lib.ncsu.edu/ocr/nu/nubian-message-1992-11-30_0010/nubian-message-1992-11-30_0010-annotation-list-paragraph.json"
+	#uri = "http://iiif.harvardartmuseums.org/manifests/object/299843"
+	#uri = "https://purl.stanford.edu/qm670kv1873/iiif/manifest.json"
+	uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
 	results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
