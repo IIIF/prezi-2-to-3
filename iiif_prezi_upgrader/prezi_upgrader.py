@@ -15,6 +15,7 @@ class Upgrader(object):
 		self.default_lang = flags.get("default_lang", "@none")
 		self.deref_links = flags.get("deref_links", True)
 
+		self.id_type_hash = {}
 
 		self.language_properties = ['label', 'attribution', 'summary']
 
@@ -27,7 +28,8 @@ class Upgrader(object):
 			"start", "includes", "items", "structures", "annotations"]
 
 		self.annotation_properties = [
-			"body", "target", "motivation"
+			"body", "target", "motivation", "source", "selector", "state", 
+			"stylesheet", "styleClass"
 		]
 
 		self.set_properties = [
@@ -73,8 +75,7 @@ class Upgrader(object):
 			"text/xml": "Dataset"
 		}
 
-		#'full': 'source',
-		#'style': 'styleClass'
+
 
 
 	def retrieve_resource(self, uri):
@@ -159,6 +160,11 @@ class Upgrader(object):
 		# Called from process_resource so we can switch
 		t = what.get('@type', '')
 		if t:
+			if type(t) == list:
+				if 'oa:CssStyle' in t:
+					t = "CssStylesheet"
+				elif 'cnt:ContentAsText' in t:
+					t = "TextualBody"
 			if t.startswith('sc:'):
 				t = t.replace('sc:', '')
 			elif t.startswith('oa:'):
@@ -169,6 +175,8 @@ class Upgrader(object):
 				t = "AnnotationCollection"
 			elif t == "AnnotationList":
 				t = "AnnotationPage"
+			elif t == "cnt:ContentAsText":
+				t = "TextualBody"
 			what['type'] = t
 			del what['@type']
 		else:
@@ -199,7 +207,6 @@ class Upgrader(object):
 					except:
 						new[i['@language']] = [i['@value']]
 		return new
-
 
 	def fix_languages(self, what):
 		for p in self.language_properties:
@@ -235,6 +242,8 @@ class Upgrader(object):
 						v = {'id':v}
 					if not 'type' in v and typ:
 						v['type'] = typ
+					elif not 'type' in v and v['id'] in self.id_type_hash:
+						v['type'] = self.id_type_hash[v['id']]
 					elif self.deref_links:
 						# do a HEAD on the resource and look at Content-Type
 						try:
@@ -263,8 +272,8 @@ class Upgrader(object):
 									data = self.fix_type(data)
 									v['type'] = data['type']
 
-						if not 'type' in v:
-							print "Don't know type for %s: %s" % (p, what[p])
+					if not 'type' in v:
+						print "Don't know type for %s: %s" % (p, what[p])
 					new.append(v)
 				what[p] = new
 		return what
@@ -274,6 +283,10 @@ class Upgrader(object):
 			what['id'] = what['@id']
 			del what['@id']
 		# @type already processed
+		# Now add to id/type hash for lookups
+		if 'id' in what and 'type' in what:
+			self.id_type_hash[what['id']] = what['type']
+
 		if 'license' in what:
 			what['rights'] = what['license']
 			del what['license']
@@ -308,33 +321,31 @@ class Upgrader(object):
 	def process_collection(self, what):
 		what = self.process_generic(what)
 
-		nl = []
-		colls = what.get('collections', [])
-		for c in colls:
-			if not type(c) == dict:
-				c = {'id': c, 'type': 'Collection'}
-			elif not 'type' in c:
-				c['type'] = 'Collection'
-			nl.append(c)
-		mfsts = what.get('manifests', [])		
-		for m in mfsts:
-			if not type(m) == dict:
-				m = {'id': m, 'type': 'Manifest'}
-			elif not 'type' in m:
-				m['type'] = 'Manifest'
-			nl.append(m)			
-		members = what.get('members', [])
-		nl.extend(members)
-
-		if nl:
-			what['items'] = nl
-		if mfsts:
-			del what['manifests']
-		if colls:
-			del what['collections']
-		if members:
+		if 'members' in what:
+			what['items'] = what['members']
 			del what['members']
-
+		else:
+			nl = []
+			colls = what.get('collections', [])
+			for c in colls:
+				if not type(c) == dict:
+					c = {'id': c, 'type': 'Collection'}
+				elif not 'type' in c:
+					c['type'] = 'Collection'
+				nl.append(c)
+			mfsts = what.get('manifests', [])		
+			for m in mfsts:
+				if not type(m) == dict:
+					m = {'id': m, 'type': 'Manifest'}
+				elif not 'type' in m:
+					m['type'] = 'Manifest'
+				nl.append(m)			
+			if nl:
+				what['items'] = nl
+		if 'manifests' in what:
+			del what['manifests']
+		if 'collections' in what:
+			del what['collections']
 		return what
 
 	def process_manifest(self, what):
@@ -354,88 +365,48 @@ class Upgrader(object):
 			what['items'] = what['sequences']
 			del what['sequences']
 
-		if 'structures' in what:
-			# Need to process from here, to have access to all info
-			# needed to unflatten them
-			rhash = {}
-			tops = []
-			for r in what['structures']:
-				new = self.fix_type(r)
-				new = self.process_range(new)				
-				rhash[new['id']] = new
-				tops.append(new['id'])
-
-			for rng in what['structures']:
-				# first try to include our Range items
-				newits = []
-				for child in rng['items']:
-					if "@id" in child:
-						c = self.fix_type(child)
-						c = self.process_generic(c)
-					else:
-						c = child
-					if c['type'] == "Range" and c['id'] in rhash:
-						newits.append(rhash[c['id']])
-						del rhash[c['id']]
-					else:
-						newits.append(c)
-				rng['items'] = newits
-
-				# Harvard has a strange within based pattern
-				if 'within' in rng:
-					tops.remove(rng['id'])
-					parid = rng['within'][0]['id']
-					del rng['within']
-					parent = rhash.get(parid, None)
-					if not parent:
-						# Just drop it on the floor?
-						print "Unknown parent range: %s" % parid
-					else:
-						# e.g. Harvard has massive duplication of canvases
-						# not wrong, but don't need it any more
-						for child in rng['items']:
-							for sibling in parent['items']:
-								if child['id'] == sibling['id']:
-									parent['items'].remove(sibling)
-									break
-						parent['items'].append(rng)
-
-
-			what['structures'] = []
-			for t in tops:
-				if t in rhash:
-					what['structures'].append(rhash[t])
 		return what
 
 	def process_range(self, what):
 		what = self.process_generic(what)
 
-		nl = []
-		rngs = what.get('ranges', [])
-		for r in rngs:
-			if not type(r) == dict:
-				r = {'id': r, 'type': 'Range'}
-			elif not 'type' in r:
-				r['type'] = 'Range'
-			nl.append(r)
-		cvs = what.get('canvases', [])		
-		for c in cvs:
-			if not type(c) == dict:
-				c = {'id': c, 'type': 'Canvas'}
-			elif not 'type' in c:
-				c['type'] = 'Canvas'
-			nl.append(c)			
 		members = what.get('members', [])
-		nl.extend(members)
-
-		if rngs:
-			del what['ranges']
-		if cvs:
-			del what['canvases']
-		if members:
+		if 'members' in what:
+			its = what['members']
 			del what['members']
+			nl = []
+			for i in its:
+				if not type(i) == dict:
+					# look in id/type hash
+					if i in self.id_type_hash:
+						nl.append({"id": i, "type": self.id_type_hash[i]})
+					else:
+						nl.append({"id": i})
+				else:
+					nl.append(i)
+			what['items'] = nl
+		else:
+			nl = []
+			rngs = what.get('ranges', [])
+			for r in rngs:
+				if not type(r) == dict:
+					r = {'id': r, 'type': 'Range'}
+				elif not 'type' in r:
+					r['type'] = 'Range'
+				nl.append(r)
+			cvs = what.get('canvases', [])		
+			for c in cvs:
+				if not type(c) == dict:
+					c = {'id': c, 'type': 'Canvas'}
+				elif not 'type' in c:
+					c['type'] = 'Canvas'
+				nl.append(c)			
+			what['items'] = nl
 
-		what['items'] = nl
+		if 'canvases' in what:
+			del what['canvases']
+		if 'ranges' in what:
+			del what['ranges']
 
 		# contentLayer
 		if 'contentLayer' in what:
@@ -471,15 +442,25 @@ class Upgrader(object):
 
 	def process_canvas(self, what):
 		what = self.process_generic(what)
-		newl = {'type': 'AnnotationPage', 'items': []}
-		for anno in what['images']:
-			newl['items'].append(anno)
-		what['items'] = [newl]
-		del what['images']
+		if 'images' in what:
+			newl = {'type': 'AnnotationPage', 'items': []}
+			for anno in what['images']:
+				newl['items'].append(anno)
+			what['items'] = [newl]
+			del what['images']
 		return what
 
 	def process_annotationpage(self, what):
 		what = self.process_generic(what)
+
+		# XXX label is affected by undecided IIIF/api#1195
+
+		if 'resources' in what:
+			what['items'] = what['resources']
+			del what['resources']
+		elif not 'items' in what:
+			what['items'] = []
+
 		return what
 
 	def process_annotationcollection(self, what):
@@ -527,10 +508,10 @@ class Upgrader(object):
 			del what['style']
 		return what
 
-	def process_contentastext(self, what):
-		what['type'] = 'TextualBody'
-		what['value'] = what['chars']
-		del what['chars']
+	def process_textualbody(self, what):
+		if 'chars' in what:
+			what['value'] = what['chars']
+			del what['chars']
 		return what	
 
 	def process_choice(self, what):
@@ -550,6 +531,66 @@ class Upgrader(object):
 
 		return what
 
+	def post_process_generic(self, what):
+		return what
+
+	def post_process_manifest(self, what):
+		# do ranges at this point, after everything else is traversed
+
+		if 'structures' in what:
+			# Need to process from here, to have access to all info
+			# needed to unflatten them
+			rhash = {}
+			tops = []
+			for r in what['structures']:
+				new = self.fix_type(r)
+				new = self.process_range(new)				
+				rhash[new['id']] = new
+				tops.append(new['id'])
+
+			for rng in what['structures']:
+				# first try to include our Range items
+				newits = []
+				for child in rng['items']:
+					if "@id" in child:
+						c = self.fix_type(child)
+						c = self.process_generic(c)
+					else:
+						c = child
+
+					if c['type'] == "Range" and c['id'] in rhash:
+						newits.append(rhash[c['id']])
+						del rhash[c['id']]
+					else:
+						newits.append(c)
+				rng['items'] = newits
+
+				# Harvard has a strange within based pattern
+				if 'within' in rng:
+					tops.remove(rng['id'])
+					parid = rng['within'][0]['id']
+					del rng['within']
+					parent = rhash.get(parid, None)
+					if not parent:
+						# Just drop it on the floor?
+						print "Unknown parent range: %s" % parid
+					else:
+						# e.g. Harvard has massive duplication of canvases
+						# not wrong, but don't need it any more
+						for child in rng['items']:
+							for sibling in parent['items']:
+								if child['id'] == sibling['id']:
+									parent['items'].remove(sibling)
+									break
+						parent['items'].append(rng)
+
+
+			what['structures'] = []
+			for t in tops:
+				if t in rhash:
+					what['structures'].append(rhash[t])
+		return what
+
 	def process_resource(self, what, top=False):
 
 		if top:
@@ -561,14 +602,14 @@ class Upgrader(object):
 		# First update types, so we can switch on it
 		what = self.fix_type(what)
 		typ = what.get('type', '')
-		if type(typ) == list:
-			# Pick one to do first? 
-			typ = ""
 	
 		fn = getattr(self, 'process_%s' % typ.lower(), self.process_generic)
 
 		what = fn(what)
 		what = self.traverse(what)
+
+		fn2 = getattr(self, 'post_process_%s' % typ.lower(), self.post_process_generic)
+		what = fn2(what)
 
 		if top:
 			# Add back in the v3 context
@@ -597,13 +638,16 @@ class Upgrader(object):
 if __name__ == "__main__":
 
 	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": True})
-	results = upgrader.process_cached('tests/input_data/manifest-basic.json')
+	# results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
+	#uri = "http://iiif.io/api/presentation/2.0/example/fixtures/list/65/list1.json"
 	#uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
 	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
-	#results = upgrader.process_uri(uri, True)
+	uri = "http://adore.ugent.be/IIIF/manifests/archive.ugent.be%3A4B39C8CA-6FF9-11E1-8C42-C8A93B7C8C91"
+	uri = "http://bluemountain.princeton.edu/exist/restxq/iiif/bmtnaae_1918-12_01/manifest"
+	results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
 
