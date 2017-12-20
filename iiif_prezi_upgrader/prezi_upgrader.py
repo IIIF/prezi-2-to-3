@@ -79,11 +79,8 @@ class Upgrader(object):
 			"text/xml": "Dataset"
 		}
 
-
-
-
 	def retrieve_resource(self, uri):
-		resp = requests.get(uri)
+		resp = requests.get(uri, verify=False)
 		return resp.json()
 
 	def traverse(self, what):
@@ -667,9 +664,14 @@ if __name__ == "__main__":
 	#uri = "http://iiif.io/api/presentation/2.0/example/fixtures/list/65/list1.json"
 	#uri = "http://media.nga.gov/public/manifests/nga_highlights.json"
 	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
-	uri = "http://adore.ugent.be/IIIF/manifests/archive.ugent.be%3A4B39C8CA-6FF9-11E1-8C42-C8A93B7C8C91"
-	uri = "http://bluemountain.princeton.edu/exist/restxq/iiif/bmtnaae_1918-12_01/manifest"
-	uri = "https://api.bl.uk/metadata/iiif/ark:/81055/vdc_00000004216E/manifest.json"
+	#uri = "http://adore.ugent.be/IIIF/manifests/archive.ugent.be%3A4B39C8CA-6FF9-11E1-8C42-C8A93B7C8C91"
+	#uri = "http://bluemountain.princeton.edu/exist/restxq/iiif/bmtnaae_1918-12_01/manifest"
+	#uri = "https://api.bl.uk/metadata/iiif/ark:/81055/vdc_00000004216E/manifest.json"
+	#uri = "https://damsssl.llgc.org.uk/iiif/2.0/4389767/manifest.json"
+	#uri = "http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json"
+	#uri = "https://lbiiif.riksarkivet.se/arkis!R0000004/manifest"
+	#uri = "https://d.lib.ncsu.edu/collections/catalog/nubian-message-1992-11-30/manifest.json"
+	uri = "https://ocr.lib.ncsu.edu/ocr/nu/nubian-message-1992-11-30_0010/nubian-message-1992-11-30_0010-annotation-list-paragraph.json"
 	results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
