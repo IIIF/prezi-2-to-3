@@ -61,7 +61,11 @@ class Upgrader(object):
 			"http://iiif.io/api/auth/1/kiosk": "kiosk",
 			"http://iiif.io/api/auth/1/login": "login",
 			"http://iiif.io/api/auth/1/clickthrough": "clickthrough",
-			"http://iiif.io/api/auth/1/external": "external"	
+			"http://iiif.io/api/auth/1/external": "external",	
+			"http://iiif.io/api/auth/0/kiosk": "kiosk",
+			"http://iiif.io/api/auth/0/login": "login",
+			"http://iiif.io/api/auth/0/clickthrough": "clickthrough",
+			"http://iiif.io/api/auth/0/external": "external"
 		}
 		
 		self.content_type_map = {
@@ -133,7 +137,9 @@ class Upgrader(object):
 				del what['@context']
 				return what
 			elif ctxt in ["http://iiif.io/api/search/1/context.json",
-				"http://iiif.io/api/auth/1/context.json"]:
+				"http://iiif.io/api/search/0/context.json",
+				"http://iiif.io/api/auth/1/context.json",
+				"http://iiif.io/api/auth/0/context.json"]:
 				# handle below in profiles
 				pass
 			else:
@@ -141,19 +147,31 @@ class Upgrader(object):
 
 		if 'profile' in what:
 			# Auth: CookieService1 , TokenService1
-			p = what['profile']
+			profile = what['profile']
 			if profile in [
 				"http://iiif.io/api/auth/1/kiosk",
 				"http://iiif.io/api/auth/1/login",
 				"http://iiif.io/api/auth/1/clickthrough",
-				"http://iiif.io/api/auth/1/external"]:
+				"http://iiif.io/api/auth/1/external",
+				"http://iiif.io/api/auth/0/kiosk",
+				"http://iiif.io/api/auth/0/login",
+				"http://iiif.io/api/auth/0/clickthrough",
+				"http://iiif.io/api/auth/0/external"
+				]:
 				what['type'] = 'AuthCookieService1'
-			elif profile == "http://iiif.io/api/auth/1/token":
+				# leave profile alone
+			elif profile in ["http://iiif.io/api/auth/1/token",
+				"http://iiif.io/api/auth/0/token"]:
 				what['type'] = 'AuthTokenService1'
-			elif profile == "http://iiif.io/api/search/1/search":
+				del what['profile']
+			elif profile in ["http://iiif.io/api/search/1/search",
+				"http://iiif.io/api/search/0/search"]:
 				what['type'] = "SearchService1"
-			elif profile == "http://iiif.io/api/search/1/autocomplete":
+				del what['profile']
+			elif profile == ["http://iiif.io/api/search/1/autocomplete",
+				"http://iiif.io/api/search/0/autocomplete"]:
 				what['type'] = "AutoCompleteService1"
+				del what['profile']
 		return what
 
 	def fix_type(self, what):
@@ -242,7 +260,7 @@ class Upgrader(object):
 						v = {'id':v}
 					if not 'type' in v and typ:
 						v['type'] = typ
-					elif not 'type' in v and v['id'] in self.id_type_hash:
+					elif not 'type' in v and 'id' in v and v['id'] in self.id_type_hash:
 						v['type'] = self.id_type_hash[v['id']]
 					elif self.deref_links:
 						# do a HEAD on the resource and look at Content-Type
@@ -307,7 +325,11 @@ class Upgrader(object):
 
 		if "profile" in what:
 			p = what['profile']
-			if p in self.profile_map:
+			if type(p) == list and p[0].startswith('http://iiif.io/api/image/'):
+				# URGH embedded Image API info.
+				# Leave it alone, I think
+				pass
+			elif p in self.profile_map:
 				what['profile'] = self.profile_map[p]
 			else:
 				print "Unrecognized profile: %s (continuing)" % p
@@ -647,6 +669,7 @@ if __name__ == "__main__":
 	#uri = "https://iiif.lib.harvard.edu/manifests/drs:48309543"
 	uri = "http://adore.ugent.be/IIIF/manifests/archive.ugent.be%3A4B39C8CA-6FF9-11E1-8C42-C8A93B7C8C91"
 	uri = "http://bluemountain.princeton.edu/exist/restxq/iiif/bmtnaae_1918-12_01/manifest"
+	uri = "https://api.bl.uk/metadata/iiif/ark:/81055/vdc_00000004216E/manifest.json"
 	results = upgrader.process_uri(uri, True)
 
 	print json.dumps(results, indent=2, sort_keys=True)
