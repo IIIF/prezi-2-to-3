@@ -96,12 +96,18 @@ class Upgrader(object):
 				new[k] = v
 				continue
 			if type(v) == dict:
-				new[k] = self.process_resource(v)
+				if not v.keys() == ['type', 'id']:
+					new[k] = self.process_resource(v)
+				else:
+					new[k] = v
 			elif type(v) == list:
 				newl = []
 				for i in v:
 					if type(i) == dict:
-						newl.append(self.process_resource(i))
+						if not i.keys() == ['type', 'id']:
+							newl.append(self.process_resource(i))
+						else:
+							newl.append(i)
 					else:
 						newl.append(i)
 				new[k] = newl
@@ -201,7 +207,6 @@ class Upgrader(object):
 				try:
 					what[p] = self.do_language_map(what[p])
 				except:
-					print what
 					raise
 		if 'metadata' in what:
 			newmd = []
@@ -361,6 +366,22 @@ class Upgrader(object):
 				tops.append(new['id'])
 
 			for rng in what['structures']:
+				# first try to include our Range items
+				newits = []
+				for child in rng['items']:
+					if "@id" in child:
+						c = self.fix_type(child)
+						c = self.process_generic(c)
+					else:
+						c = child
+					if c['type'] == "Range" and c['id'] in rhash:
+						newits.append(rhash[c['id']])
+						del rhash[c['id']]
+					else:
+						newits.append(c)
+				rng['items'] = newits
+
+				# Harvard has a strange within based pattern
 				if 'within' in rng:
 					tops.remove(rng['id'])
 					parid = rng['within'][0]['id']
@@ -378,9 +399,12 @@ class Upgrader(object):
 									parent['items'].remove(sibling)
 									break
 						parent['items'].append(rng)
+
+
 			what['structures'] = []
 			for t in tops:
-				what['structures'].append(rhash[t])
+				if t in rhash:
+					what['structures'].append(rhash[t])
 		return what
 
 	def process_range(self, what):
@@ -447,13 +471,11 @@ class Upgrader(object):
 
 	def process_canvas(self, what):
 		what = self.process_generic(what)
-
 		newl = {'type': 'AnnotationPage', 'items': []}
 		for anno in what['images']:
 			newl['items'].append(anno)
 		what['items'] = [newl]
 		del what['images']
-
 		return what
 
 	def process_annotationpage(self, what):
