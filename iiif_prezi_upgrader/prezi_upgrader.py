@@ -165,7 +165,7 @@ class Upgrader(object):
 				"http://iiif.io/api/search/0/search"]:
 				what['type'] = "SearchService1"
 				del what['profile']
-			elif profile == ["http://iiif.io/api/search/1/autocomplete",
+			elif profile in ["http://iiif.io/api/search/1/autocomplete",
 				"http://iiif.io/api/search/0/autocomplete"]:
 				what['type'] = "AutoCompleteService1"
 				del what['profile']
@@ -331,6 +331,11 @@ class Upgrader(object):
 			else:
 				print "Unrecognized profile: %s (continuing)" % p
 
+		if "otherContent" in what:
+			# otherContent is already AnnotationList, so no need to inject
+			what['annotations'] = what['otherContent']
+			del what['otherContent']
+
 		what = self.fix_languages(what)
 		what = self.fix_sets(what)
 		what = self.fix_objects(what)
@@ -460,7 +465,12 @@ class Upgrader(object):
 		return what
 
 	def process_canvas(self, what):
+
+		# XXX process otherContent here before generic grabs it
+
+
 		what = self.process_generic(what)
+
 		if 'images' in what:
 			newl = {'type': 'AnnotationPage', 'items': []}
 			for anno in what['images']:
