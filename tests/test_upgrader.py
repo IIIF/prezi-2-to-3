@@ -15,3 +15,11 @@ class TestUpgrader(unittest.TestCase):
 			"http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json")
 		self.assertTrue('id' in self.results['structures'][0])
 		self.assertTrue('id' in self.results['items'][0]['items'][0])
+
+	def test_type(self):
+		self.assertTrue('type' in self.results)
+		self.assertEqual(self.results['type'], "Manifest")
+		self.assertTrue('type' in self.results['items'][0])
+		self.assertEqual(self.results['items'][0]['type'], 'Sequence')
+
+	
