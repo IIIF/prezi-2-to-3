@@ -116,7 +116,7 @@ class Upgrader(object):
 			else:
 				new[k] = v
 			if not k in self.all_properties and not k in self.annotation_properties:
-				print "Unknown property: %s" % k
+				print("Unknown property: %s" % k)
 
 		return new
 
@@ -140,7 +140,7 @@ class Upgrader(object):
 				# handle below in profiles
 				pass
 			else:
-				print "Unknown context: %s" % ctxt
+				print("Unknown context: %s" % ctxt)
 
 		if 'profile' in what:
 			# Auth: CookieService1 , TokenService1
@@ -202,25 +202,28 @@ class Upgrader(object):
 	def do_language_map(self, value):
 		new = {}
 		defl = self.default_lang
-		if type(value) == unicode:
-			new[defl] = [value]
-		elif type(value) == dict:
+		if type(value) == dict:
 			try:
 				new[value['@language']].append(value['@value'])
 			except:
 				new[value['@language']] = [value['@value']]
 		elif type(value) == list:
 			for i in value:
-				if type(i) == unicode:
-					try:
-						new[defl].append(i)
-					except:
-						new[defl] = [i]
-				elif type(i) == dict:
+				if type(i) == dict:
 					try:
 						new[i['@language']].append(i['@value'])
 					except:
 						new[i['@language']] = [i['@value']]
+				elif type(i) == list:
+					pass
+				else:  # string value
+					try:
+						new[defl].append(i)
+					except:
+						new[defl] = [i]
+
+		else:  # string value
+			new[defl] = [value]
 		return new
 
 	def fix_languages(self, what):
@@ -288,7 +291,7 @@ class Upgrader(object):
 									v['type'] = data['type']
 
 					if not 'type' in v:
-						print "Don't know type for %s: %s" % (p, what[p])
+						print("Don't know type for %s: %s" % (p, what[p]))
 					new.append(v)
 				what[p] = new
 		return what
@@ -329,7 +332,7 @@ class Upgrader(object):
 			elif p in self.profile_map:
 				what['profile'] = self.profile_map[p]
 			else:
-				print "Unrecognized profile: %s (continuing)" % p
+				print("Unrecognized profile: %s (continuing)" % p)
 
 		if "otherContent" in what:
 			# otherContent is already AnnotationList, so no need to inject
@@ -611,7 +614,7 @@ class Upgrader(object):
 					parent = rhash.get(parid, None)
 					if not parent:
 						# Just drop it on the floor?
-						print "Unknown parent range: %s" % parid
+						print("Unknown parent range: %s" % parid)
 					else:
 						# e.g. Harvard has massive duplication of canvases
 						# not wrong, but don't need it any more
@@ -666,9 +669,8 @@ class Upgrader(object):
 		return self.process_resource(what, top)
 
 	def process_cached(self, fn, top=True):
-		fh = file(fn)
-		data = fh.read()
-		fh.close()
+		with open(fn, 'r') as fh:
+			data = fh.read()
 		what = json.loads(data)
 		return self.process_resource(what, top)
 
@@ -696,7 +698,7 @@ if __name__ == "__main__":
 	uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
 	results = upgrader.process_uri(uri, True)
 
-	print json.dumps(results, indent=2, sort_keys=True)
+	print(json.dumps(results, indent=2, sort_keys=True))
 
 
 
