@@ -39,6 +39,8 @@
     {
       "@type": "sc:Sequence",
       "label": "Current Order",
+      "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+      "viewingHint": "paged",
       "viewingDirection": "right-to-left", 
       "canvases": [
         {

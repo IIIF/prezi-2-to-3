@@ -19,6 +19,7 @@ class Upgrader(object):
 		self.allow_extensions = flags.get("ext_ok", False)
 		self.default_lang = flags.get("default_lang", "@none")
 		self.deref_links = flags.get("deref_links", True)
+		self.debug = flags.get('debug', False)
 
 		self.id_type_hash = {}
 
@@ -86,6 +87,10 @@ class Upgrader(object):
 			"text/xml": "Dataset"
 		}
 
+	def warn(self, msg):
+		if self.debug:
+			print(msg)
+
 	def retrieve_resource(self, uri):
 		resp = requests.get(uri, verify=False)
 		return resp.json()
@@ -123,7 +128,7 @@ class Upgrader(object):
 			else:
 				new[k] = v
 			if not k in self.all_properties and not k in self.annotation_properties:
-				print("Unknown property: %s" % k)
+				self.warn("Unknown property: %s" % k)
 
 		return new
 
@@ -148,7 +153,7 @@ class Upgrader(object):
 				# handle below in profiles
 				pass
 			else:
-				print("Unknown context: %s" % ctxt)
+				self.warn("Unknown context: %s" % ctxt)
 
 		if 'profile' in what:
 			# Auth: CookieService1 , TokenService1
@@ -309,7 +314,7 @@ class Upgrader(object):
 									v['type'] = data['type']
 
 					if not 'type' in v:
-						print("Don't know type for %s: %s" % (p, what[p]))
+						self.warn("Don't know type for %s: %s" % (p, what[p]))
 					new.append(v)
 				what[p] = new
 		return what
@@ -350,7 +355,7 @@ class Upgrader(object):
 			elif p in self.profile_map:
 				what['profile'] = self.profile_map[p]
 			else:
-				print("Unrecognized profile: %s (continuing)" % p)
+				self.warn("Unrecognized profile: %s (continuing)" % p)
 
 		if "otherContent" in what:
 			# otherContent is already AnnotationList, so no need to inject
@@ -632,7 +637,7 @@ class Upgrader(object):
 					parent = rhash.get(parid, None)
 					if not parent:
 						# Just drop it on the floor?
-						print("Unknown parent range: %s" % parid)
+						self.warn("Unknown parent range: %s" % parid)
 					else:
 						# e.g. Harvard has massive duplication of canvases
 						# not wrong, but don't need it any more
@@ -696,7 +701,7 @@ class Upgrader(object):
 if __name__ == "__main__":
 
 	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
-	# results = upgrader.process_cached('tests/input_data/manifest-basic.json')
+	results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
@@ -723,8 +728,8 @@ if __name__ == "__main__":
 	#uri = "http://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/manifest.json"
 	#uri = "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/list/p0001-0025.json"
 	#uri = "http://www2.dhii.jp/nijl/NIJL0018/099-0014/manifest_tags.json"
-	uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"	
-	results = upgrader.process_uri(uri, True)
+	#uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"	
+	#results = upgrader.process_uri(uri, True)
 
 	print(json.dumps(results, indent=2, sort_keys=True))
 
