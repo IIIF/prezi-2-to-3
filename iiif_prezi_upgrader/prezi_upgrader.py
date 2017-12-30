@@ -6,6 +6,11 @@
 import json
 import requests
 
+try:
+        STR_TYPES = [str, unicode] #Py2
+except:
+        STR_TYPES = [bytes, str] #Py3
+
 class Upgrader(object):
 
 	def __init__(self, flags={}):
@@ -52,6 +57,8 @@ class Upgrader(object):
 			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level0": "level0",
 			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level1": "level1",
 			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level2": "level2",
+           "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1": "level1",
+           "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2": "level2",
 			"http://iiif.io/api/image/1/level0.json": "level0",
 			"http://iiif.io/api/image/1/level1.json": "level1",
 			"http://iiif.io/api/image/1/level2.json": "level2",
@@ -129,7 +136,8 @@ class Upgrader(object):
 				what['type'] = "ImageService2"
 				del what['@context']
 				return what				
-			elif ctxt == "http://iiif.io/api/image/1/context.json":
+			elif ctxt in ["http://iiif.io/api/image/1/context.json",
+				"http://library.stanford.edu/iiif/image-api/1.1/context.json"]:				
 				what['type'] = "ImageService1"			
 				del what['@context']
 				return what
@@ -202,7 +210,9 @@ class Upgrader(object):
 	def do_language_map(self, value):
 		new = {}
 		defl = self.default_lang
-		if type(value) == dict:
+		if type(value) in STR_TYPES:
+			new[defl] = [value]
+		elif type(value) == dict:
 			try:
 				new[value['@language']].append(value['@value'])
 			except:
@@ -216,6 +226,14 @@ class Upgrader(object):
 						new[i['@language']] = [i['@value']]
 				elif type(i) == list:
 					pass
+				elif type(i) == dict:
+					# UCD has just {"@value": ""}
+					if not '@language' in i:
+						i['@language'] = '@none'
+					try:
+						new[i['@language']].append(i['@value'])
+					except:
+						new[i['@language']] = [i['@value']]
 				else:  # string value
 					try:
 						new[defl].append(i)
@@ -695,7 +713,17 @@ if __name__ == "__main__":
 	#uri = "https://ocr.lib.ncsu.edu/ocr/nu/nubian-message-1992-11-30_0010/nubian-message-1992-11-30_0010-annotation-list-paragraph.json"
 	#uri = "http://iiif.harvardartmuseums.org/manifests/object/299843"
 	#uri = "https://purl.stanford.edu/qm670kv1873/iiif/manifest.json"
-	uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
+	#uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
+	#uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
+	#uri = "http://manifests.ydc2.yale.edu/manifest/Admont43"
+	#uri = "https://manifests.britishart.yale.edu/manifest/1474"
+	#uri = "http://demos.biblissima-condorcet.fr/iiif/metadata/BVMM/chateauroux/manifest.json"
+	#uri = "http://www.e-codices.unifr.ch/metadata/iiif/sl-0002/manifest.json"
+	#uri = "https://data.ucd.ie/api/img/manifests/ucdlib:33064"
+	#uri = "http://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/manifest.json"
+	#uri = "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/list/p0001-0025.json"
+	#uri = "http://www2.dhii.jp/nijl/NIJL0018/099-0014/manifest_tags.json"
+	uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"	
 	results = upgrader.process_uri(uri, True)
 
 	print(json.dumps(results, indent=2, sort_keys=True))
@@ -704,14 +732,11 @@ if __name__ == "__main__":
 
 ### TO DO:
 
-### The more complicated stuff
-
 # Determine which annotations should be items and which annotations
 # -- this is non trivial, but also not common
 
-
 ### Cardinality Requirements
-# Check all presence of all MUSTs in the spec and maybe bail
+# Check all presence of all MUSTs in the spec and maybe bail?
 
 # A Collection must have at least one label.
 # A Manifest must have at least one label.
