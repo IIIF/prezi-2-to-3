@@ -489,6 +489,9 @@ class Upgrader(object):
 		# Remove redundant 'top' Range
 		if 'behavior' in what and 'top' in what['behavior']:
 			what['behavior'].remove('top')
+			# if we're empty, remove it
+			if not what['behavior']:
+				del what['behavior']
 
 		if 'includes' in what:
 			# single object

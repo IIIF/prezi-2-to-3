@@ -109,8 +109,25 @@ class TestUpgrader(unittest.TestCase):
 			self.assertEqual(self.results['summary']['@none'][0], 
 				"This is a description of the Manifest")
 
+	def test_ranges(self):
+		ranges = self.results['structures']
+		self.assertEqual(len(ranges), 1)
+		rng = ranges[0]
+		# print(json.dumps(rng, indent=2, sort_keys=True))		
+		self.assertTrue(not "behavior" in rng)
+		self.assertEqual(rng['type'], "Range")
+		self.assertTrue("items" in rng)
+		self.assertEqual(len(rng['items']), 3)
+		# [0] is a Canvas
+		self.assertTrue("items" in rng['items'][1])
+		self.assertTrue("items" in rng['items'][1]['items'][0])
+		self.assertTrue("items" in rng['items'][2])
 
-	# Annotation Tests
+
+
+#
+# Annotation Tests
+#
 
 class TestAnnotations(unittest.TestCase):
 
