@@ -16,6 +16,7 @@ class Upgrader(object):
 	def __init__(self, flags={}):
 		self.crawl = flags.get("crawl", False)
 		self.description_is_metadata = flags.get("desc_2_md", True)
+		self.related_is_metadata = flags.get("related_2_md", False)
 		self.allow_extensions = flags.get("ext_ok", False)
 		self.default_lang = flags.get("default_lang", "@none")
 		self.deref_links = flags.get("deref_links", True)
@@ -345,6 +346,15 @@ class Upgrader(object):
 				# rename to summary
 				what['summary'] = what['description']
 			del what['description']
+		if 'related' in what:
+			if self.related_is_metadata:
+				md = what.get('metadata', [])
+				# NB this must happen before fix_languages
+				md.append({"label": u"Related", "value": "<a href='%s'>Related Document</a>" % what['related']})
+				what['metadata'] = md
+			else:
+				what['homepage'] = {"id": what['related'], "type": "Text"}
+				del what['related']
 
 		if "profile" in what:
 			p = what['profile']
