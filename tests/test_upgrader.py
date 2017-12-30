@@ -107,3 +107,37 @@ class TestUpgrader(unittest.TestCase):
 			self.assertTrue('@none' in self.results['summary'])
 			self.assertEqual(self.results['summary']['@none'][0], 
 				"This is a description of the Manifest")
+
+
+	# Annotation Tests
+
+class TestAnnotations(unittest.TestCase):
+
+	def setUp(self):
+		flags= {"ext_ok": False, "deref_links": False}
+		self.upgrader = prezi_upgrader.Upgrader(flags)
+		self.results = self.upgrader.process_cached('tests/input_data/manifest-annos.json')
+		self.annotations = self.results['items'][0]['items'][0]['items'][0]['items']
+
+	def test_body(self):
+		anno = self.annotations[0]
+		self.assertTrue('body' in anno)
+		self.assertEqual(anno['body']['id'], 
+			"http://iiif.io/api/presentation/2.1/example/fixtures/resources/page1-full.png")
+
+	def test_target(self):
+		anno = self.annotations[0]
+		self.assertTrue('target' in anno)
+		self.assertEqual(anno['target'],
+		"http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json")
+
+	def test_type(self):
+		anno = self.annotations[0]
+		self.assertTrue('type' in anno)
+		self.assertEqual(anno['type'], "Annotation")
+
+	def test_motivation(self):
+		anno = self.annotations[0]
+		self.assertTrue('motivation' in anno)
+		self.assertEqual(anno['motivation'], "painting")
+
