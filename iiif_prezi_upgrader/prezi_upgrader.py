@@ -153,6 +153,9 @@ class Upgrader(object):
 				"http://iiif.io/api/auth/0/context.json"]:
 				# handle below in profiles
 				pass
+			elif ctxt == "http://iiif.io/api/annex/openannotation/context.json":
+				what['type'] = "ImageApiSelector"
+				del what['@context']
 			else:
 				self.warn("Unknown context: %s" % ctxt)
 
@@ -200,6 +203,9 @@ class Upgrader(object):
 				t = t.replace('oa:', '')
 			elif t.startswith('dctypes:'):
 				t = t.replace('dctypes:', '')
+			elif t.startswith('iiif:'):
+				# e.g iiif:ImageApiSelector
+				t = t.replace('iiif:', '')
 			if t == "Layer":
 				t = "AnnotationCollection"
 			elif t == "AnnotationList":
@@ -601,8 +607,7 @@ class Upgrader(object):
 				v = [v]
 			newl.extend(v)
 			del what['item']
-		new['items'] = newl
-
+		what['items'] = newl
 		return what
 
 	def post_process_generic(self, what):

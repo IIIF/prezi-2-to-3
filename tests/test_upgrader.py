@@ -1,4 +1,5 @@
 import unittest
+import json
 
 from iiif_prezi_upgrader import prezi_upgrader
 
@@ -140,4 +141,31 @@ class TestAnnotations(unittest.TestCase):
 		anno = self.annotations[0]
 		self.assertTrue('motivation' in anno)
 		self.assertEqual(anno['motivation'], "painting")
+
+	def test_source(self):
+		anno = self.annotations[1]
+		self.assertEqual(anno['body']['type'], 'SpecificResource')
+		self.assertTrue('source' in anno['body'])
+
+	def test_ContentAsText(self):
+		anno = self.annotations[2]
+		self.assertEqual(anno['body']['type'], 'TextualBody')
+		self.assertTrue('value' in anno['body'])
+
+	def test_choice(self):
+		anno = self.annotations[3]
+		self.assertEqual(anno['body']['type'], 'Choice')
+		self.assertTrue('items' in anno['body'])
+		self.assertEqual(len(anno['body']['items']), 2)
+
+	def test_style(self):
+		anno = self.annotations[4]
+		# print(json.dumps(anno, indent=2, sort_keys=True))
+		self.assertTrue('stylesheet' in anno)
+		self.assertEqual(anno['stylesheet']['type'], "CssStylesheet")
+		self.assertTrue("value" in anno['stylesheet'])
+		self.assertEqual(anno['stylesheet']['value'], ".red {color: red;}")
+		self.assertTrue("styleClass" in anno['body'])
+		self.assertEqual(anno['body']['styleClass'], "red")
+
 
