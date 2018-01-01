@@ -601,10 +601,10 @@ class Upgrader(object):
 		what = self.process_generic(what)
 
 		newl = []
-		if what.has_key('default'):
+		if 'default' in what:
 			newl.append(what['default'])
 			del what['default']
-		if what.has_key('item'):
+		if 'item' in what:
 			v = what['item']
 			if type(v) != list:
 				v = [v]
