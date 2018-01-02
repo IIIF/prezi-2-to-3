@@ -1,2 +1,2 @@
 
-from prezi_upgrader import Upgrader
+from .prezi_upgrader import Upgrader
