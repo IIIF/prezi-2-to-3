@@ -360,7 +360,7 @@ class Upgrader(object):
 				what['metadata'] = md
 			else:
 				what['homepage'] = {"id": what['related'], "type": "Text"}
-				del what['related']
+			del what['related']
 
 		if "profile" in what:
 			p = what['profile']

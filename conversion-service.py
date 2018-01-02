@@ -78,14 +78,15 @@ class Service(object):
         fs = ['desc_2_md', 'related_2_md', 'ext_ok', 'default_lang', 'deref_links']
         flags = {}
         for f in fs:
-            if f in request.query:
+            if request.query.get(f, None):
                 val = request.query[f]
                 if val == "True":
                     val = True
                 elif val == "False":
-                    val = "False"
+                    val = False
                 flags[f] = val
 
+        print flags
         return self.do_upgrade(data, flags)
 
     def index_route(self):
