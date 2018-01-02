@@ -26,3 +26,9 @@ v3 = upgrader.process_uri("http://example.org/iiif/v2/file.json")
 * `deref_links` : Should links without a `format` property be dereferenced and the HTTP response inspected for the media type?  The default is `True`.
 * `debug` : Are we in debug mode and should spit out more warnings than normal? The default is `False`
 
+
+# FAQ
+
+* Does this rely on iiif-prezi's ManifestFactory? No. It has as few dependencies as possible to allow it to be ported to other languages.
+* Is it up to date? It is developed by two of the IIIF Editors (@azaroth42 and @zimeon) and we try to keep it up to date with the latest draft version 3.0 Presentation API specs.
+* Are PRs welcome? Yes :)
