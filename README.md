@@ -8,13 +8,14 @@ Libraries to upgrade IIIF Presentation API manifest from v2 to v3 automatically
 
 # Usage:
 
-Create an Upgrader, and then call `process_cached` with the path to a version 2.x IIIF Presentation API resource on disk, or `process_uri` with a URI to the same.  The results of the call will be the JSON of the equivalent version 3.0 resource.
+Create an Upgrader, and then call `process_cached` with the path to a version 2.x IIIF Presentation API resource on disk, or `process_uri` with a URI to the same. If the JSON is already in memory, then call `process_resource` instead. The results of the call will be the JSON of the equivalent version 3.0 resource.
 
 ```python
 from iiif_prezi_upgrader import Upgrader
 upgrader = Upgrader(flags={"flag_name" : "flag_value"})  # create an upgrader
 v3 = upgrader.process_cached("/path/to/iiif/v2/file.json")
 v3 = upgrader.process_uri("http://example.org/iiif/v2/file.json")
+v3 = upgrader.process_resource(json, top=True)
 ```
 
 ## Flags
