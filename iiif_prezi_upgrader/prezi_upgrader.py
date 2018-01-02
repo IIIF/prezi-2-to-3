@@ -178,6 +178,10 @@ class Upgrader(object):
 				"http://iiif.io/api/auth/0/token"]:
 				what['type'] = 'AuthTokenService1'
 				del what['profile']
+			elif profile in ["http://iiif.io/api/auth/1/logout",
+				"http://iiif.io/api/auth/0/logout"]:
+				what['type'] = 'AuthLogoutService1'
+				del what['profile']
 			elif profile in ["http://iiif.io/api/search/1/search",
 				"http://iiif.io/api/search/0/search"]:
 				what['type'] = "SearchService1"

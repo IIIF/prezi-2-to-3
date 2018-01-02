@@ -215,5 +215,28 @@ class TestServices(unittest.TestCase):
 		self.assertTrue('service' in svc)
 		self.assertEqual(svc['service'][0]['type'], "AutoCompleteService1")
 
+	def test_image(self):
+		svc = self.results['items'][0]['items'][0]['items'][0]['items'][0]['body']['service'][0]
+		self.assertTrue('id' in svc)
+		self.assertTrue('type' in svc)
+		self.assertEqual(svc['type'], "ImageService2")
+		self.assertTrue('profile' in svc)
+		self.assertEqual(svc['profile'], 'level1')
 
+	def test_auth(self):
+		svc = self.results['items'][0]['items'][0]['items'][0]['items'][0]['body']['service'][0]['service'][0]
+		self.assertTrue('id' in svc)
+		self.assertTrue('type' in svc)
+		self.assertEqual(svc['type'], "AuthCookieService1")
+		self.assertTrue('profile' in svc)
+		self.assertEqual(svc['profile'], 'login')
+		self.assertTrue('service' in svc)
+		token = svc['service'][0]
+		self.assertTrue('id' in token)
+		self.assertTrue('type' in token)
+		self.assertEqual(token['type'], "AuthTokenService1")
+		logout = svc['service'][1]
+		self.assertTrue('id' in logout)
+		self.assertTrue('type' in logout)
+		self.assertEqual(logout['type'], "AuthLogoutService1")
 
