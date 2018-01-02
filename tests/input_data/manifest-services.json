@@ -1,0 +1,72 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json", 
+  "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json", 
+  "@type": "sc:Manifest", 
+  "label": "Manifest Label",
+
+  "service": {
+    "@context": "http://iiif.io/api/search/1/context.json",
+    "@id": "http://example.org/services/identifier/search",
+    "profile": "http://iiif.io/api/search/1/search",
+    "service": {
+      "@id": "http://example.org/services/identifier/autocomplete",
+      "profile": "http://iiif.io/api/search/1/autocomplete"
+    }
+  },
+
+  "sequences": [
+    {
+      "@type": "sc:Sequence",
+      "label": "Current Order",
+      "canvases": [
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json", 
+          "@type": "sc:Canvas", 
+          "label": "Test 1 Canvas: 1", 
+          "height": 1800, 
+          "width": 1200, 
+          "images": [
+            {
+              "@type": "oa:Annotation", 
+              "motivation": "sc:painting", 
+              "resource": {
+                "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/resources/page1-full.png", 
+                "@type": "dctypes:Image",
+
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://example.org/iiif/book1-page1",
+                  "profile": "http://iiif.io/api/image/2/level2.json",
+                  "service": {
+                    "@context": "http://iiif.io/api/auth/1/context.json",
+                    "@id": "https://authentication.example.org/login",
+                    "profile": "http://iiif.io/api/auth/1/login",
+                    "label": "Login to Example Institution",
+                    "header": "Please Log In",
+                    "description": "Example Institution requires that you log in with your example account to view this content.",
+                    "confirmLabel": "Login",
+                    "failureHeader": "Authentication Failed",
+                    "failureDescription": "<a href=\"http://example.org/policy\">Access Policy</a>",                    
+                    "service": [
+                      {
+                        "@id": "https://authentication.example.org/token",
+                        "profile": "http://iiif.io/api/auth/1/token"
+                      },
+                      {
+                        "@id": "https://authentication.example.org/logout",
+                        "profile": "http://iiif.io/api/auth/1/logout",
+                        "label": "Logout from Example Institution"
+                      }
+                    ]
+                  }
+                }
+                
+              }, 
+              "on": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

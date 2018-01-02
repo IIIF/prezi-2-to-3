@@ -3,6 +3,10 @@ import json
 
 from iiif_prezi_upgrader import prezi_upgrader
 
+###
+### Basic Tests
+###
+
 class TestUpgrader(unittest.TestCase):
 	
 	def setUp(self):
@@ -125,9 +129,9 @@ class TestUpgrader(unittest.TestCase):
 
 
 
-#
-# Annotation Tests
-#
+###
+### Annotation Tests
+###
 
 class TestAnnotations(unittest.TestCase):
 
@@ -184,5 +188,32 @@ class TestAnnotations(unittest.TestCase):
 		self.assertEqual(anno['stylesheet']['value'], ".red {color: red;}")
 		self.assertTrue("styleClass" in anno['body'])
 		self.assertEqual(anno['body']['styleClass'], "red")
+
+
+###
+### Service Tests
+###
+
+
+
+class TestServices(unittest.TestCase):
+
+	def setUp(self):
+		flags= {"ext_ok": False, "deref_links": False}
+		self.upgrader = prezi_upgrader.Upgrader(flags)
+		self.results = self.upgrader.process_cached('tests/input_data/manifest-services.json')
+
+	def test_search(self):
+		# Search and Autocomplete are on the Manifest
+		manifest = self.results
+		self.assertTrue('service' in manifest)
+		self.assertEqual(type(manifest['service']), list)
+		svc = manifest['service'][0]
+		self.assertTrue(not '@context' in svc)
+		self.assertEqual(svc['id'], "http://example.org/services/identifier/search")
+		self.assertEqual(svc['type'], "SearchService1")
+		self.assertTrue('service' in svc)
+		self.assertEqual(svc['service'][0]['type'], "AutoCompleteService1")
+
 
 

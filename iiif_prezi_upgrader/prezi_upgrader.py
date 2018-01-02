@@ -151,8 +151,8 @@ class Upgrader(object):
 				"http://iiif.io/api/search/0/context.json",
 				"http://iiif.io/api/auth/1/context.json",
 				"http://iiif.io/api/auth/0/context.json"]:
-				# handle below in profiles
-				pass
+				# handle below in profiles, but delete context here
+				del what['@context']
 			elif ctxt == "http://iiif.io/api/annex/openannotation/context.json":
 				what['type'] = "ImageApiSelector"
 				del what['@context']
@@ -719,7 +719,7 @@ class Upgrader(object):
 if __name__ == "__main__":
 
 	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
-	results = upgrader.process_cached('tests/input_data/manifest-basic.json')
+	results = upgrader.process_cached('tests/input_data/manifest-services.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
