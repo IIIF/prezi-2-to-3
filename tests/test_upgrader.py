@@ -4,10 +4,10 @@ import json
 from iiif_prezi_upgrader import prezi_upgrader
 
 ###
-### Basic Tests
+### Basic Manifest Tests
 ###
 
-class TestUpgrader(unittest.TestCase):
+class TestManifest(unittest.TestCase):
 	
 	def setUp(self):
 		flags= {"ext_ok": False, "deref_links": False}
@@ -239,4 +239,33 @@ class TestServices(unittest.TestCase):
 		self.assertTrue('id' in logout)
 		self.assertTrue('type' in logout)
 		self.assertEqual(logout['type'], "AuthLogoutService1")
+
+
+###
+### Collection Tests
+###
+
+class TestCollection(unittest.TestCase):
+
+	def setUp(self):
+		flags= {"ext_ok": False, "deref_links": False}
+		self.upgrader = prezi_upgrader.Upgrader(flags)
+		self.results = self.upgrader.process_cached('tests/input_data/collection-basic.json')
+
+	def test_items(self):
+		self.assertTrue('items' in self.results)
+		items = self.results['items']
+		# print(json.dumps(items, indent=2, sort_keys=True))
+		# Two Collections, then One Manifest
+		self.assertEqual(len(items), 3)
+		self.assertEqual(items[0]['type'], "Collection")
+		self.assertEqual(items[2]['type'], "Manifest")
+		self.assertTrue('items' in items[0])
+		# Three Members: Collection, Manifest, Collection
+		items2 = items[0]['items']
+		self.assertEqual(len(items2), 3)
+		self.assertEqual(items2[0]['type'], "Collection")
+		self.assertEqual(items2[1]['type'], "Manifest")
+		self.assertTrue('behavior' in items2[0])
+		self.assertTrue('multi-part' in items2[0]['behavior'])
 
