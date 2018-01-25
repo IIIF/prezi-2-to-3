@@ -17,8 +17,8 @@ except ImportError:
 
 from bottle import Bottle, abort, request, response, run
 
-egg_cache = "/path/to/web/egg_cache"
-os.environ['PYTHON_EGG_CACHE'] = egg_cache
+#egg_cache = "/path/to/web/egg_cache"
+#os.environ['PYTHON_EGG_CACHE'] = egg_cache
 
 from iiif_prezi_upgrader import Upgrader
 
@@ -28,7 +28,6 @@ class Service(object):
         self.default_flags = {}
 
     def fetch(self, url):
-        # print url
         try:
             wh = urlopen(url)
         except HTTPError as wh:
@@ -86,7 +85,6 @@ class Service(object):
                     val = False
                 flags[f] = val
 
-        print flags
         return self.do_upgrade(data, flags)
 
     def index_route(self):
@@ -119,12 +117,6 @@ class Service(object):
         self.app.hook('after_request')(self.after_request)
         return self.app
 
-
-def apache():
-    s = Service()
-    return s.get_bottle_app()
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__.strip(),
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -142,4 +134,7 @@ def main():
 if __name__ == "__main__":
     main()
 else:
-    application = apache()
+    s = Service()
+    application = s.get_bottle_app()
+
+
