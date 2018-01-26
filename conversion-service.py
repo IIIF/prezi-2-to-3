@@ -71,7 +71,10 @@ class Service(object):
         except:
             return self.return_json({'okay': 0, 'error': 'Cannot fetch url', 'url': url})
 
-        data = json.loads(data)
+        try:
+            data = json.loads(data) #TODO need to catch if this is invalid JSON e.g. using a non IIIF resoruces like www.google.com
+        except TypeError as error:
+            return self.return_json({'okay': 0, 'error': 'Invalid JSON for supplied url.', 'url': url, 'json_error': str(error)})
 
         # And look for flags
         fs = ['desc_2_md', 'related_2_md', 'ext_ok', 'default_lang', 'deref_links']
@@ -88,9 +91,9 @@ class Service(object):
         return self.do_upgrade(data, flags)
 
     def index_route(self):
-        fh = file(os.path.join(os.path.dirname(__file__),'index.html'))
+        fh = open(os.path.join(os.path.dirname(__file__),'index.html')) # file() not supported on python 3
         data = fh.read()
-        fh.close()        
+        fh.close()
         return data
 
     def dispatch_views(self):
@@ -136,5 +139,3 @@ if __name__ == "__main__":
 else:
     s = Service()
     application = s.get_bottle_app()
-
-
