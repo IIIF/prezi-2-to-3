@@ -70,9 +70,10 @@ class Service(object):
             (data, webhandle) = self.fetch(url)
         except:
             return self.return_json({'okay': 0, 'error': 'Cannot fetch url', 'url': url})
-
+            
+        # catch if this is invalid JSON e.g. using a non IIIF resoruces like www.google.com
         try:
-            data = json.loads(data) #TODO need to catch if this is invalid JSON e.g. using a non IIIF resoruces like www.google.com
+            data = json.loads(data)
         except TypeError as error:
             return self.return_json({'okay': 0, 'error': 'Invalid JSON for supplied url.', 'url': url, 'json_error': str(error)})
 
