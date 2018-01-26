@@ -11,6 +11,19 @@ try:
 except:
         STR_TYPES = [bytes, str] #Py3
 
+
+# could the default flags json be defined here?
+# something like:
+# {
+#    "crawl"
+#    {
+#       "default":False,
+#       "description": "This property does x"
+#    }
+#    ...
+# }
+# if this is a public property I can re-use the description and defaults in the command line app and web wrapper   
+
 class Upgrader(object):
 
 	def __init__(self, flags={}):
@@ -35,7 +48,7 @@ class Upgrader(object):
 			"start", "includes", "items", "structures", "annotations"]
 
 		self.annotation_properties = [
-			"body", "target", "motivation", "source", "selector", "state", 
+			"body", "target", "motivation", "source", "selector", "state",
 			"stylesheet", "styleClass"
 		]
 
@@ -45,13 +58,13 @@ class Upgrader(object):
 		]
 
 		self.object_property_types = {
-			"thumbnail": "Image", 
-			"logo":"Image", 
-			"related": "", 
-			"rendering": "", 
-			"service": "Service", 
-			"rights": "", 
-			"seeAlso": "Dataset", 
+			"thumbnail": "Image",
+			"logo":"Image",
+			"related": "",
+			"rendering": "",
+			"service": "Service",
+			"rights": "",
+			"seeAlso": "Dataset",
 			"within": ""
 		}
 
@@ -66,17 +79,17 @@ class Upgrader(object):
 			"http://iiif.io/api/image/1/level2.json": "level2",
 			"http://iiif.io/api/image/2/level0.json": "level0",
 			"http://iiif.io/api/image/2/level1.json": "level1",
-			"http://iiif.io/api/image/2/level2.json": "level1",	
+			"http://iiif.io/api/image/2/level2.json": "level1",
 			"http://iiif.io/api/auth/1/kiosk": "kiosk",
 			"http://iiif.io/api/auth/1/login": "login",
 			"http://iiif.io/api/auth/1/clickthrough": "clickthrough",
-			"http://iiif.io/api/auth/1/external": "external",	
+			"http://iiif.io/api/auth/1/external": "external",
 			"http://iiif.io/api/auth/0/kiosk": "kiosk",
 			"http://iiif.io/api/auth/0/login": "login",
 			"http://iiif.io/api/auth/0/clickthrough": "clickthrough",
 			"http://iiif.io/api/auth/0/external": "external"
 		}
-		
+
 		self.content_type_map = {
 			"image": "Image",
 			"audio": "Sound",
@@ -141,10 +154,10 @@ class Upgrader(object):
 			if ctxt == "http://iiif.io/api/image/2/context.json":
 				what['type'] = "ImageService2"
 				del what['@context']
-				return what				
+				return what
 			elif ctxt in ["http://iiif.io/api/image/1/context.json",
-				"http://library.stanford.edu/iiif/image-api/1.1/context.json"]:				
-				what['type'] = "ImageService1"			
+				"http://library.stanford.edu/iiif/image-api/1.1/context.json"]:
+				what['type'] = "ImageService1"
 				del what['@context']
 				return what
 			elif ctxt in ["http://iiif.io/api/search/1/context.json",
@@ -403,13 +416,13 @@ class Upgrader(object):
 				elif not 'type' in c:
 					c['type'] = 'Collection'
 				nl.append(c)
-			mfsts = what.get('manifests', [])		
+			mfsts = what.get('manifests', [])
 			for m in mfsts:
 				if not type(m) == dict:
 					m = {'id': m, 'type': 'Manifest'}
 				elif not 'type' in m:
 					m['type'] = 'Manifest'
-				nl.append(m)			
+				nl.append(m)
 			if nl:
 				what['items'] = nl
 		if 'manifests' in what:
@@ -464,13 +477,13 @@ class Upgrader(object):
 				elif not 'type' in r:
 					r['type'] = 'Range'
 				nl.append(r)
-			cvs = what.get('canvases', [])		
+			cvs = what.get('canvases', [])
 			for c in cvs:
 				if not type(c) == dict:
 					c = {'id': c, 'type': 'Canvas'}
 				elif not 'type' in c:
 					c['type'] = 'Canvas'
-				nl.append(c)			
+				nl.append(c)
 			what['items'] = nl
 
 		if 'canvases' in what:
@@ -599,7 +612,7 @@ class Upgrader(object):
 		if 'chars' in what:
 			what['value'] = what['chars']
 			del what['chars']
-		return what	
+		return what
 
 	def process_choice(self, what):
 		what = self.process_generic(what)
@@ -630,7 +643,7 @@ class Upgrader(object):
 			tops = []
 			for r in what['structures']:
 				new = self.fix_type(r)
-				new = self.process_range(new)				
+				new = self.process_range(new)
 				rhash[new['id']] = new
 				tops.append(new['id'])
 
@@ -688,7 +701,7 @@ class Upgrader(object):
 		# First update types, so we can switch on it
 		what = self.fix_type(what)
 		typ = what.get('type', '')
-	
+
 		fn = getattr(self, 'process_%s' % typ.lower(), self.process_generic)
 
 		what = fn(what)
@@ -750,7 +763,7 @@ if __name__ == "__main__":
 	#uri = "http://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/manifest.json"
 	#uri = "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/list/p0001-0025.json"
 	#uri = "http://www2.dhii.jp/nijl/NIJL0018/099-0014/manifest_tags.json"
-	#uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"	
+	#uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"
 	#results = upgrader.process_uri(uri, True)
 
 	print(json.dumps(results, indent=2, sort_keys=True))
@@ -768,7 +781,7 @@ if __name__ == "__main__":
 # A Collection must have at least one label.
 # A Manifest must have at least one label.
 # An AnnotationCollection must have at least one label.
-# id on Collection, Manifest, Canvas, content, Range, 
+# id on Collection, Manifest, Canvas, content, Range,
 #    AnnotationCollection, AnnotationPage, Annotation
 # type on all
 # width+height pair for Canvas, if either
