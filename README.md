@@ -8,6 +8,69 @@ Libraries to upgrade IIIF Presentation API manifest from v2 to v3 automatically
 
 # Usage:
 
+There are three options on how to use this program either through Docker, installed locally or programatically. Details below:
+
+## Using Docker
+
+Build the docker image:
+
+```
+docker build -t prezi-2-to-3 .
+```
+
+Run the image:
+
+```
+docker run -it --rm -p 8000:80 --name upgrader prezi-2-to-3:latest
+```
+
+or run both with the following command:
+
+```
+docker build -t prezi-2-to-3 . && docker run -it --rm -p 8000:80 --name upgrader prezi-2-to-3:latest
+```
+
+Then navigating to the following page: <http://localhost:8000/index.html>.
+
+## Installing locally
+
+```
+sudo python  setup.py install
+```
+
+You can then either run a web version or run it from the command line.
+
+### Command line
+
+Usage:
+
+```
+python prezi2to3.py
+Usage:
+	python prezi2to3.py [file_path or url to manifest] [optional output file name]
+```
+
+Examples:
+
+```
+# Convert manifest from filesystem and print results to screen
+python prezi2to3.py tests/input_data/manifest-services.json
+
+# Convert remote manfiest and save results to /tmp/upgraded.json
+python prezi2to3.py http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json /tmp/upgraded.json
+```
+
+### Web version
+To run the web version:
+
+```
+ ./conversionservice.py --port 8000
+```
+
+and navigate to <http://localhost:8000/index.html>. Note the default port if not specified is 8080.
+
+## Using programatically
+
 Create an Upgrader, and then call `process_cached` with the path to a version 2.x IIIF Presentation API resource on disk, or `process_uri` with a URI to the same. If the JSON is already in memory, then call `process_resource` instead. The results of the call will be the JSON of the equivalent version 3.0 resource.
 
 ```python
