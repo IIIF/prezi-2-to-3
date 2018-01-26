@@ -70,7 +70,7 @@ class Service(object):
             (data, webhandle) = self.fetch(url)
         except:
             return self.return_json({'okay': 0, 'error': 'Cannot fetch url', 'url': url})
-            
+
         # catch if this is invalid JSON e.g. using a non IIIF resoruces like www.google.com
         try:
             data = json.loads(data)
@@ -78,7 +78,7 @@ class Service(object):
             return self.return_json({'okay': 0, 'error': 'Invalid JSON for supplied url.', 'url': url, 'json_error': str(error)})
 
         # And look for flags
-        fs = ['desc_2_md', 'related_2_md', 'ext_ok', 'default_lang', 'deref_links']
+        fs = ['desc_2_md', 'related_2_md', 'ext_ok', 'default_lang', 'deref_links'] # not all flags supported...
         flags = {}
         for f in fs:
             if request.query.get(f, None):
