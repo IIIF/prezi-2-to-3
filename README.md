@@ -64,7 +64,7 @@ python prezi2to3.py http://iiif.io/api/presentation/2.1/example/fixtures/1/manif
 To run the web version:
 
 ```
- ./conversionservice.py --port 8000
+ ./twoToThreeUpgraderService.py --port 8000
 ```
 
 and navigate to <http://localhost:8000/index.html>. Note the default port if not specified is 8080.
