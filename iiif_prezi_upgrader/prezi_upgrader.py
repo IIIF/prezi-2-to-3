@@ -36,7 +36,7 @@ class Upgrader(object):
 
 	def __init__(self, flags={}):
 
-		for flag, info in FLAGS:
+		for flag, info in FLAGS.items():
 			setattr(self, info['prop'], flags.get(flag, info['default']))
 
 		self.id_type_hash = {}
