@@ -12,28 +12,32 @@ except:
         STR_TYPES = [bytes, str] #Py3
 
 
-# could the default flags json be defined here?
-# something like:
-# {
-#    "crawl"
-#    {
-#       "default":False,
-#       "description": "This property does x"
-#    }
-#    ...
-# }
-# if this is a public property I can re-use the description and defaults in the command line app and web wrapper   
+FLAGS = {
+	"crawl": {"prop": "crawl", "default": False, 
+		"description": "NOT YET IMPLEMENTED. Crawl to linked resources, such as AnnotationLists from a Manifest"},
+	"desc_2_md": {"prop": "description_is_metadata", "default": True,
+		"description": "If true, then the source's `description` properties will be put into a `metadata` pair.\
+		 If false, they will be put into `summary`."},
+	"related_2_md": {"prop": "related_is_metadata", "default": False,
+		"description": "If true, then the `related` resource will go into a `metadata` pair.\
+		If false, it will become the `homepage` of the resource."},
+	"ext_ok": {"prop": "ext_ok", "default": False,
+		"description": "If true, then extensions are allowed and will be copied across. \
+		If false, then they will raise an error."},
+    "default_lang": {"prop": "default_lang", "default": "@none",
+    	"description": "The default language to use when adding values to language maps."},
+    "deref_links": {"prop": "deref_links", "default": True,
+    	"description": "If true, the conversion will dereference external content resources to look for format and type."},
+    "debug": {"prop": "debug", "default": False,
+    	"description": "If true, then go into a more verbose debugging mode."}
+}
 
 class Upgrader(object):
 
 	def __init__(self, flags={}):
-		self.crawl = flags.get("crawl", False)
-		self.description_is_metadata = flags.get("desc_2_md", True)
-		self.related_is_metadata = flags.get("related_2_md", False)
-		self.allow_extensions = flags.get("ext_ok", False)
-		self.default_lang = flags.get("default_lang", "@none")
-		self.deref_links = flags.get("deref_links", True)
-		self.debug = flags.get('debug', False)
+
+		for flag, info in FLAGS:
+			setattr(self, info['prop'], flags.get(flag, info['default']))
 
 		self.id_type_hash = {}
 
