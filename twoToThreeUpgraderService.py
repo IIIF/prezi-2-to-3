@@ -15,12 +15,13 @@ except ImportError:
     from urllib2 import urlopen, HTTPError
     from urlparse import urlparse
 
-from bottle import Bottle, abort, request, response, run
+from bottle import Bottle, abort, request, response, run, template
 
 #egg_cache = "/path/to/web/egg_cache"
 #os.environ['PYTHON_EGG_CACHE'] = egg_cache
 
 from iiif_prezi_upgrader import Upgrader
+from iiif_prezi_upgrader.prezi_upgrader import FLAGS
 
 class Service(object):
 
@@ -78,7 +79,7 @@ class Service(object):
             return self.return_json({'okay': 0, 'error': 'Invalid JSON for supplied url.', 'url': url, 'json_error': str(error)})
 
         # And look for flags
-        fs = ['desc_2_md', 'related_2_md', 'ext_ok', 'default_lang', 'deref_links'] # not all flags supported...
+        fs = FLAGS
         flags = {}
         for f in fs:
             if request.query.get(f, None):
@@ -92,10 +93,8 @@ class Service(object):
         return self.do_upgrade(data, flags)
 
     def index_route(self):
-        fh = open(os.path.join(os.path.dirname(__file__),'index.html')) # file() not supported on python 3
-        data = fh.read()
-        fh.close()
-        return data
+        output = template('templates/index.tpl', flags=FLAGS)
+        return output
 
     def dispatch_views(self):
         self.app.route("/", "GET", self.index_route)
