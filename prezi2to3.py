@@ -24,7 +24,7 @@ if __name__ == "__main__":
         description=FLAGS[key]['description']
         default=FLAGS[key]['default']
         type=type(default)
-        if default == True or default == False:
+        if FLAGS[key]['default'] is not str:
             type=bool
         parser.add_argument('--%s' % name, default=default, type=type, help=description)
 
