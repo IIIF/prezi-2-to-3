@@ -3,7 +3,7 @@ import os
 os.chdir(os.path.dirname(__file__))
 
 import bottle
-from conversionservice import Service
+from twoToThreeUpgraderService import Service
 # ... build or import your bottle application here ...
 # Do NOT use bottle.run() with mod_wsgi
 s = Service()

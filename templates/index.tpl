@@ -39,7 +39,7 @@
 
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 150%;
+    width: 500px;
     color: black;
     background: #eaf6fc;
     text-align: center;
@@ -50,7 +50,7 @@
     position: absolute;
     z-index: 1;
     top: -5px;
-    left: 105%;
+    left: 125%;
 }
 
 .tooltip:hover .tooltiptext {
@@ -102,36 +102,28 @@
                 <b>Options</b>:
                 <div style="border: 1px solid black;margin-left: 10px; margin-bottom: 20px; margin-top:10px; padding: 10px">
                     <ul>
+                        <% for key in flags:
+                            if isinstance(flags[key]['default'], bool):
+                                type='checkbox'
+                                if flags[key]['default']:
+                                    checked = 'checked'
+                                else:
+                                    checked = ''
+                                end
+                                value = ''
+                            else:
+                                type = 'input'
+                                value = 'value=%s' % flags[key]['default']
+                                checked = ''
+                            end
+                        %>
                         <li>
                             <div class="tooltip">
-                                Move description to Metadata section &nbsp;&nbsp;<input  name="desc_2_md" type="checkbox" checked /><br/>
-                                <span class="tooltiptext">The `description` property is not a summary, and hence should be put in as a `metadata` pair.  The label generated will be "Description".  The default is `True`.</span>
+                                {{ flags[key]['prop'].replace('_',' ').title() }} &nbsp;&nbsp;<input  name="{{ key }}" type="{{ type }}" {{ checked }} {{ value }} /><br/>
+                                <span class="tooltiptext">{{ flags[key]['description'] }}</span>
                             </div>
                         </li>
-                        <li>
-                            <div class="tooltip">
-                                Move related to Metadata section &nbsp;&nbsp;<input name="related_2_md" type="checkbox" /><br/>
-                                <span class="tooltiptext">The related property is not a homepage, and hence should be put in as a metadata pair. The label generated will be "Related". The default is False (and hence the property will simply be renamed as homepage)</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip">
-                                Copy extensions &nbsp;&nbsp;<input name="ext_ok" type="checkbox" /><br/>
-                                <span class="tooltiptext">Should extensions be copied through to the new version. The default is False.</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip">
-                                Default language (Values are from <a href="http://tools.ietf.org/html/rfc5646">RFC5646</a>)&nbsp;&nbsp;<input name="default_lang" type="input" value="@none" /><br/>
-                                <span class="tooltiptext">The default language to use for language maps. The default is "@none". </span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tooltip">
-                                Dereference links without format &nbsp;&nbsp;<input name="deref_links" type="checkbox" checked /><br/>
-                                <span class="tooltiptext">Should links without a format property be dereferenced and the HTTP response inspected for the media type? The default is True.</span>
-                            </div>
-                        </li>
+                        % end
                     </ul>
                 </div>
 

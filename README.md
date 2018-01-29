@@ -1,7 +1,7 @@
 # prezi-2-to-3
 
-[![Build Status](https://travis-ci.org/iiif-prezi/prezi-2-to-3.svg?branch=master)](https://travis-ci.org/iiif-prezi/prezi-2-to-3)
-[![Coverage Status](https://coveralls.io/repos/github/iiif-prezi/prezi-2-to-3/badge.svg?branch=master)](https://coveralls.io/github/iiif-prezi/prezi-2-to-3?branch=master)
+[![Build Status](https://travis-ci.org/iiif/prezi-2-to-3.svg?branch=master)](https://travis-ci.org/iiif/prezi-2-to-3)
+[![Coverage Status](https://coveralls.io/repos/github/iiif/prezi-2-to-3/badge.svg?branch=master)](https://coveralls.io/github/iiif/prezi-2-to-3?branch=master)
 
 Libraries to upgrade IIIF Presentation API manifest from v2 to v3 automatically
 
@@ -64,7 +64,7 @@ python prezi2to3.py http://iiif.io/api/presentation/2.1/example/fixtures/1/manif
 To run the web version:
 
 ```
- ./conversionservice.py --port 8000
+ ./twoToThreeUpgraderService.py --port 8000
 ```
 
 and navigate to <http://localhost:8000/index.html>. Note the default port if not specified is 8080.
