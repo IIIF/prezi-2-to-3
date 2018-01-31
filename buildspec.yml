@@ -26,4 +26,3 @@ phases:
       - printf '[{"name":"prezi2to3container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
-    
