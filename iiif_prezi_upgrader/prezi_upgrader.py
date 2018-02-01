@@ -384,10 +384,18 @@ class Upgrader(object):
 				what['summary'] = what['description']
 			del what['description']
 		if 'related' in what:
+			rel = what['related']
 			if self.related_is_metadata:
 				md = what.get('metadata', [])
 				# NB this must happen before fix_languages
-				md.append({"label": u"Related", "value": "<a href='%s'>Related Document</a>" % what['related']})
+				label = "Related Document"
+				if type(rel) == dict:
+					uri = rel['@id']
+					if 'label' in rel:
+						label = rel['label']
+				else:
+					uri = rel
+				md.append({"label": u"Related", "value": "<a href='%s'>%s</a>" % (uri, label) })
 				what['metadata'] = md
 			else:
 				what['homepage'] = {"id": what['related'], "type": "Text"}
