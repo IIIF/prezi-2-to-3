@@ -135,7 +135,7 @@ class Upgrader(object):
 				new[k] = v
 				continue
 			if type(v) == dict:
-				if not v.keys() == ['type', 'id']:
+				if not set(v.keys()) == set(['type', 'id']):
 					new[k] = self.process_resource(v)
 				else:
 					new[k] = v
@@ -143,7 +143,7 @@ class Upgrader(object):
 				newl = []
 				for i in v:
 					if type(i) == dict:
-						if not i.keys() == ['type', 'id']:
+						if not set(i.keys()) == set(['type', 'id']):
 							newl.append(self.process_resource(i))
 						else:
 							newl.append(i)
@@ -354,13 +354,17 @@ class Upgrader(object):
 		return what
 
 	def process_generic(self, what):
+
 		if '@id' in what:
 			what['id'] = what['@id']
 			del what['@id']
 		# @type already processed
 		# Now add to id/type hash for lookups
 		if 'id' in what and 'type' in what:
-			self.id_type_hash[what['id']] = what['type']
+			try:
+				self.id_type_hash[what['id']] = what['type']
+			except Exception as e:
+				raise ValueError(what['id'])
 
 		if 'license' in what:
 			what['rights'] = what['license']
@@ -380,10 +384,18 @@ class Upgrader(object):
 				what['summary'] = what['description']
 			del what['description']
 		if 'related' in what:
+			rel = what['related']
 			if self.related_is_metadata:
 				md = what.get('metadata', [])
 				# NB this must happen before fix_languages
-				md.append({"label": u"Related", "value": "<a href='%s'>Related Document</a>" % what['related']})
+				label = "Related Document"
+				if type(rel) == dict:
+					uri = rel['@id']
+					if 'label' in rel:
+						label = rel['label']
+				else:
+					uri = rel
+				md.append({"label": u"Related", "value": "<a href='%s'>%s</a>" % (uri, label) })
 				what['metadata'] = md
 			else:
 				what['homepage'] = {"id": what['related'], "type": "Text"}

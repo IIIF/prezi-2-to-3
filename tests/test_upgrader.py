@@ -269,3 +269,16 @@ class TestCollection(unittest.TestCase):
 		self.assertTrue('behavior' in items2[0])
 		self.assertTrue('multi-part' in items2[0]['behavior'])
 
+class TestRemote(unittest.TestCase):
+
+	def test_remotes(self):
+		uris = [
+			"https://api.bl.uk/metadata/iiif/ark:/81055/vdc_100054149545.0x000001/manifest.json",
+			"https://d.lib.ncsu.edu/collections/catalog/nubian-message-1992-11-30/manifest",
+			"https://sinai-images.library.ucla.edu/iiif/ark%3A%252F21198%252Fz1bc4wfw/manifest"
+		]
+		
+		for u in uris:
+			flags = {"deref_links": False}
+			up = prezi_upgrader.Upgrader(flags)
+			res = up.process_uri(u)
