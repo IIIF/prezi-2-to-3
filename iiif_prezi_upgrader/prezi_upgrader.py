@@ -364,7 +364,7 @@ class Upgrader(object):
 			try:
 				self.id_type_hash[what['id']] = what['type']
 			except Exception as e:
-				raise what['id']
+				raise ValueError(what['id'])
 
 		if 'license' in what:
 			what['rights'] = what['license']
