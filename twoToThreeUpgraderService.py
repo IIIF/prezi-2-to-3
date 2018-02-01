@@ -42,7 +42,7 @@ class Service(object):
         return (data, wh)
 
     def return_json(self, js):
-        response.content_type = "application/json"
+        response.content_type = "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\""
         return json.dumps(js, indent=2, sort_keys=True)
 
     def do_upgrade(self, js, flags={}):
@@ -75,7 +75,7 @@ class Service(object):
         # catch if this is invalid JSON e.g. using a non IIIF resoruces like www.google.com
         try:
             data = json.loads(data)
-        except:
+        except Exception as error:
             return self.return_json({'okay': 0, 'error': 'Invalid JSON for supplied url.', 'url': url, 'json_error': str(error)})
 
         # And look for flags
@@ -90,10 +90,10 @@ class Service(object):
                     val = False
                 flags[f] = val
 
-        #try:
-        response = self.do_upgrade(data, flags)
-        #except Exception, e:
-        #    response = {'okay': 0, 'error': "Error: %s" % e }
+        try:
+            response = self.do_upgrade(data, flags)
+        except Exception as e:
+            response = {'okay': 0, 'error': "Error: %s" % e }
         return response
 
     def index_route(self):
