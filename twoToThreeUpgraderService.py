@@ -90,7 +90,11 @@ class Service(object):
                     val = False
                 flags[f] = val
 
-        return self.do_upgrade(data, flags)
+        try:
+            response = self.do_upgrade(data, flags)
+        except Exception, e:
+            response = {'okay': 0, 'error': "Error: %s" % e }
+        return response
 
     def index_route(self):
         output = template('templates/index.tpl', flags=FLAGS)
