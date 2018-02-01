@@ -281,7 +281,4 @@ class TestRemote(unittest.TestCase):
 		for u in uris:
 			flags = {"deref_links": False}
 			up = prezi_upgrader.Upgrader(flags)
-			try:
-				res = up.process_uri(u)
-			except Exception as e:
-				self.assertTrue("" == e)
+			res = up.process_uri(u)
