@@ -354,13 +354,17 @@ class Upgrader(object):
 		return what
 
 	def process_generic(self, what):
+
 		if '@id' in what:
 			what['id'] = what['@id']
 			del what['@id']
 		# @type already processed
 		# Now add to id/type hash for lookups
 		if 'id' in what and 'type' in what:
-			self.id_type_hash[what['id']] = what['type']
+			try:
+				self.id_type_hash[what['id']] = what['type']
+			except Exception as e:
+				raise what['id']
 
 		if 'license' in what:
 			what['rights'] = what['license']
