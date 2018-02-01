@@ -111,7 +111,14 @@ class Upgrader(object):
 
 	def retrieve_resource(self, uri):
 		resp = requests.get(uri, verify=False)
-		return resp.json()
+		try:
+			val = resp.json()
+		except:
+			try:
+				val = json.loads(r.text)
+			except:
+				val = {}
+		return val
 
 	def traverse(self, what):
 		new = {}
@@ -333,8 +340,7 @@ class Upgrader(object):
 							elif ct.startswith("application/json") or \
 								ct.startswith("application/ld+json"):
 								# Try and fetch and look for a type!
-								fh = requests.get(v['id'])
-								data = fh.json()
+								data = self.retrieve_resource(v['id'])
 								if 'type' in data:
 									v['type'] = data['type']
 								elif '@type' in data:
