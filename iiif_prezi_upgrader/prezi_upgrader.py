@@ -135,7 +135,7 @@ class Upgrader(object):
 				new[k] = v
 				continue
 			if type(v) == dict:
-				if not v.keys() == ['type', 'id']:
+				if not set(v.keys()) == set(['type', 'id']):
 					new[k] = self.process_resource(v)
 				else:
 					new[k] = v
@@ -143,7 +143,7 @@ class Upgrader(object):
 				newl = []
 				for i in v:
 					if type(i) == dict:
-						if not i.keys() == ['type', 'id']:
+						if not set(i.keys()) == set(['type', 'id']):
 							newl.append(self.process_resource(i))
 						else:
 							newl.append(i)
