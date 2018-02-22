@@ -89,7 +89,7 @@
 
           <section class="wrapper">
             <div>
-              This service will convert a version 2.0 or 2.1 Manifest to version 3.0.  Fill in the URL of your manifest, and it will provide a coverted 3.0 Manifest.
+              This service will convert a version 2.0 or 2.1 Manifest to version 3.0.  Fill in the URL of your manifest, and it will provide a converted 3.0 Manifest.
             </div>
 
             <div style="border: 1px solid black;margin-left: 10px; margin-top: 20px; padding: 10px">
