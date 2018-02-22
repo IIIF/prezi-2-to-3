@@ -6,7 +6,7 @@
 
   <head>
     <meta charset="utf-8">
-    <title>Presentation API 2 to 3 convertor &mdash; IIIF | International Image Interoperability Framework</title>
+    <title>Presentation API 2 to 3 converter &mdash; IIIF | International Image Interoperability Framework</title>
     <meta name="description" content="International Image Interoperability Framework: A community driven image framework with well defined APIs for making the world’s image repositories interoperable and accessible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="//iiif.io/css/normalize.min.css">
@@ -84,7 +84,7 @@
         <article>
 
           <header>
-            <div class="wrapper"><h1>Prezi 2 to 3 Convertor</h1></div>
+            <div class="wrapper"><h1>Prezi 2 to 3 Converter</h1></div>
           </header>
 
           <section class="wrapper">
@@ -136,7 +136,7 @@
             <div style="margin-top:20px">
             <b>Technical Note</b>
             <p>
-                If you would like to use the convertor programatically, there are two options:
+                If you would like to use the converter programatically, there are two options:
             </p>
             <ul>
               <li><a href="https://github.com/IIIF/prezi-2-to-3">Download</a> the code from github and run it locally.</li>
