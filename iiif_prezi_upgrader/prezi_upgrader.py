@@ -36,7 +36,6 @@ FLAGS = {
     	"description": "The label to use for requiredStatement mapping from attribution"}
 }
 
-
 KEY_ORDER = ["@context", "id", "@id", "type", "@type", "motivation", "label", "profile", 
 	"format", "language", "value", "metadata", "requiredStatement", "thumbnail",
 	"homepage", "logo", "rights", "logo", "height", "width", "start", 
@@ -60,7 +59,7 @@ class Upgrader(object):
 			"requiredStatement", "rights", "logo", "value",
 			"id", "type", "format", "language", "profile", "timeMode",
 			"height", "width", "duration", "viewingDirection", "behavior",
-			"related", "rendering", "service", "seeAlso", "within",
+			"homepage", "rendering", "service", "seeAlso", "within",
 			"start", "includes", "items", "structures", "annotations"]
 
 		self.annotation_properties = [
@@ -70,7 +69,7 @@ class Upgrader(object):
 
 		self.set_properties = [
 			"thumbnail", "rights", "logo", "behavior",
-			"related", "rendering", "service", "seeAlso", "within"
+			"rendering", "service", "seeAlso", "within"
 		]
 
 		self.object_property_types = {
@@ -476,7 +475,7 @@ class Upgrader(object):
 				what['_structures'] = []
 				for s in seqs:
 
-					# Test to see if we need to crawl
+					# XXX Test here to see if we need to crawl
 
 					rng = {"id": s.get('@id', self.mint_uri()), "type": "Range"}
 					rng['behavior'] = ['sequence']
@@ -736,12 +735,9 @@ class Upgrader(object):
 		# First update types, so we can switch on it
 		what = self.fix_type(what)
 		typ = what.get('type', '')
-
 		fn = getattr(self, 'process_%s' % typ.lower(), self.process_generic)
-
 		what = fn(what)
 		what = self.traverse(what)
-
 		fn2 = getattr(self, 'post_process_%s' % typ.lower(), self.post_process_generic)
 		what = fn2(what)
 
@@ -835,7 +831,6 @@ if __name__ == "__main__":
 
 ### Cardinality Requirements
 # Check all presence of all MUSTs in the spec and maybe bail?
-
 # A Collection must have at least one label.
 # A Manifest must have at least one label.
 # An AnnotationCollection must have at least one label.
