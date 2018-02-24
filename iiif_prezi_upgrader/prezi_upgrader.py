@@ -37,10 +37,11 @@ FLAGS = {
 }
 
 
-KEY_ORDER = ["@context", "id", "type", "label", "profile", "format", "language", "value",
-	"metadata", "requiredStatement", "thumbnail", "homepage", "logo", "rights", "logo",  
-	"height", "width", "start", "viewingDirection", "behavior", "navDate", "rendering",
-	"seeAlso", "within",  "includes", "items", "structures", "annotations"]
+KEY_ORDER = ["@context", "id", "@id", "type", "@type", "motivation", "label", "profile", 
+	"format", "language", "value", "metadata", "requiredStatement", "thumbnail",
+	"homepage", "logo", "rights", "logo", "height", "width", "start", 
+	"viewingDirection", "behavior", "navDate", "rendering", "seeAlso", 
+	"within",  "includes", "items", "structures", "annotations"]
 KEY_ORDER_HASH = dict([(KEY_ORDER[x], x) for x in range(len(KEY_ORDER))])
 
 class Upgrader(object):
@@ -52,6 +53,7 @@ class Upgrader(object):
 
 		self.id_type_hash = {}
 		self.language_properties = ['label', 'summary']
+		self.do_not_traverse = ['metadata', 'structures', '_structures', 'requiredStatement']
 
 		self.all_properties = [
 			"label", "metadata", "summary", "thumbnail", "navDate",
@@ -76,7 +78,6 @@ class Upgrader(object):
 			"logo":"Image",
 			"related": "",
 			"rendering": "",
-			"service": "Service",
 			"rights": "",
 			"seeAlso": "Dataset",
 			"within": ""
@@ -114,25 +115,19 @@ class Upgrader(object):
 	def traverse(self, what):
 		new = {}
 		for (k,v) in what.items():
-			if k in self.language_properties:
+			if k in self.language_properties or k in self.do_not_traverse:
+				# also handled by language_map, etc
 				new[k] = v
 				continue
-			elif k == 'metadata':
-				# also handled by language_map
-				new[k] = v
-				continue
-			elif k == 'structures':
-				# processed by Manifest directly to unflatten
-				new[k] = v
-				continue
-			elif k == "_structures":
-				# already processed sequence -> range
-				# will post process when dealing with unflattening
-				new[k] = v
-				continue
+			elif k == 'service':
+				# break service out as it has so many types
+				fn = self.process_service
+			else:
+				fn = self.process_resource
+
 			if type(v) == dict:
 				if not set(v.keys()) == set(['type', 'id']):
-					new[k] = self.process_resource(v)
+					new[k] = fn(v)
 				else:
 					new[k] = v
 			elif type(v) == list:
@@ -140,7 +135,7 @@ class Upgrader(object):
 				for i in v:
 					if type(i) == dict:
 						if not set(i.keys()) == set(['type', 'id']):
-							newl.append(self.process_resource(i))
+							newl.append(fn(i))
 						else:
 							newl.append(i)
 					else:
@@ -155,16 +150,15 @@ class Upgrader(object):
 
 	def fix_service_type(self, what):
 		# manage known service contexts
-		# assumes an answer to https://github.com/IIIF/api/issues/1352
 		if '@context' in what:
 			ctxt = what['@context']
 			if ctxt == "http://iiif.io/api/image/2/context.json":
-				what['type'] = "ImageService2"
+				what['@type'] = "ImageService2"
 				del what['@context']
 				return what
 			elif ctxt in ["http://iiif.io/api/image/1/context.json",
 				"http://library.stanford.edu/iiif/image-api/1.1/context.json"]:
-				what['type'] = "ImageService1"
+				what['@type'] = "ImageService1"
 				del what['@context']
 				return what
 			elif ctxt in ["http://iiif.io/api/search/1/context.json",
@@ -174,9 +168,10 @@ class Upgrader(object):
 				# handle below in profiles, but delete context here
 				del what['@context']
 			elif ctxt == "http://iiif.io/api/annex/openannotation/context.json":
-				what['type'] = "ImageApiSelector"
+				what['@type'] = "ImageApiSelector"
 				del what['@context']
 			else:
+				what['@type'] = "Service"
 				self.warn("Unknown context: %s" % ctxt)
 
 		if 'profile' in what:
@@ -192,24 +187,21 @@ class Upgrader(object):
 				"http://iiif.io/api/auth/0/clickthrough",
 				"http://iiif.io/api/auth/0/external"
 				]:
-				what['type'] = 'AuthCookieService1'
+				what['@type'] = 'AuthCookieService1'
 				# leave profile alone
 			elif profile in ["http://iiif.io/api/auth/1/token",
 				"http://iiif.io/api/auth/0/token"]:
-				what['type'] = 'AuthTokenService1'
-				del what['profile']
+				what['@type'] = 'AuthTokenService1'
 			elif profile in ["http://iiif.io/api/auth/1/logout",
 				"http://iiif.io/api/auth/0/logout"]:
-				what['type'] = 'AuthLogoutService1'
-				del what['profile']
+				what['@type'] = 'AuthLogoutService1'
 			elif profile in ["http://iiif.io/api/search/1/search",
 				"http://iiif.io/api/search/0/search"]:
-				what['type'] = "SearchService1"
-				del what['profile']
+				what['@type'] = "SearchService1"
 			elif profile in ["http://iiif.io/api/search/1/autocomplete",
 				"http://iiif.io/api/search/0/autocomplete"]:
-				what['type'] = "AutoCompleteService1"
-				del what['profile']
+				what['@type'] = "AutoCompleteService1"
+
 		return what
 
 	def fix_type(self, what):
@@ -238,9 +230,6 @@ class Upgrader(object):
 				t = "TextualBody"
 			what['type'] = t
 			del what['@type']
-		else:
-			# Upgrade service types based on contexts & profiles
-			what = self.fix_service_type(what)
 		return what
 
 	def do_language_map(self, value):
@@ -368,7 +357,8 @@ class Upgrader(object):
 		if 'attribution' in what:
 			label = self.do_language_map(self.attribution_label)
 			val = self.do_language_map(what['attribution'])
-			what['requiredStatement'] = {"label": {}, "value": val}
+			what['requiredStatement'] = {"label": label, "value": val}
+			del what['attribution']
 
 		if 'viewingHint' in what:
 			if not 'behavior' in what:
@@ -409,9 +399,6 @@ class Upgrader(object):
 				what['homepage'] = {"id": what['related'], "type": "Text"}
 			del what['related']
 
-		if "profile" in what:
-			# XXX Just let it fall through?
-			pass
 		if "otherContent" in what:
 			# otherContent is already AnnotationList, so no need to inject
 			what['annotations'] = what['otherContent']
@@ -420,6 +407,20 @@ class Upgrader(object):
 		what = self.fix_languages(what)
 		what = self.fix_sets(what)
 		what = self.fix_objects(what)
+		return what
+
+	def process_service(self, what):
+		what = self.fix_service_type(what)
+		# The only thing to traverse is further services
+		# everything else we leave alone
+		if 'service' in what:
+			ss = what['service']
+			if type(ss) != list:
+				what['service'] = [ss]
+			nl = []
+			for s in what['service']:
+				nl.append(self.process_service(s))
+			what['service'] = nl
 		return what
 
 	def process_collection(self, what):
@@ -584,9 +585,6 @@ class Upgrader(object):
 
 	def process_annotationpage(self, what):
 		what = self.process_generic(what)
-
-		# XXX label is affected by undecided IIIF/api#1195
-
 		if 'resources' in what:
 			what['items'] = what['resources']
 			del what['resources']
@@ -691,6 +689,7 @@ class Upgrader(object):
 					if c['type'] == "Range" and c['id'] in rhash:
 						newits.append(rhash[c['id']])
 						del rhash[c['id']]
+						tops.remove(c['id'])
 					else:
 						newits.append(c)
 				rng['items'] = newits
@@ -715,18 +714,19 @@ class Upgrader(object):
 						parent['items'].append(rng)
 
 		if '_structures' in what:
-			what['structures'] = what['_structures']
+			structs = what['_structures']
 			del what['_structures']
+		else:
+			structs = []
 		if tops:
-			if not 'structures' in what:
-				what['structures'] = []
 			for t in tops:
 				if t in rhash:
-					what['structures'].append(rhash[t])
+					structs.append(rhash[t])
+		if structs:
+			what['structures'] = structs
 		return what
 
 	def process_resource(self, what, top=False):
-
 		if top:
 			# process @context
 			orig_context = what.get("@context", "")
@@ -754,7 +754,6 @@ class Upgrader(object):
 				what['@context'] = [
     				"http://www.w3.org/ns/anno.jsonld",
     				"http://iiif.io/api/presentation/3/context.json"]
-
 		return what
 
 	def process_uri(self, uri, top=False):
@@ -819,7 +818,9 @@ if __name__ == "__main__":
 	#uri = "https://www.e-codices.unifr.ch/metadata/iiif/csg-0730/manifest.json"
 
 	#results = upgrader.process_uri(uri, True)
-	results = upgrader.process_cached('tests/input_data/manifest-sequences.json')
+	#results = upgrader.process_cached('tests/input_data/manifest-sequences.json')
+	#results = upgrader.process_cached('tests/input_data/manifest-services.json')
+	results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	# Now reorder
 	results = upgrader.reorder(results)
