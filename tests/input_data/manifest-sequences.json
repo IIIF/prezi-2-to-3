@@ -1,0 +1,122 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json", 
+  "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json", 
+  "@type": "sc:Manifest", 
+  "label": "Manifest Label",
+  "description": "This is a description of the Manifest",
+
+  "viewingDirection": "left-to-right",
+  "viewingHint": "paged",
+  "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+
+  "sequences": [
+    {
+      "@type": "sc:Sequence",
+      "label": "Current Order",
+      "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+      "viewingHint": "paged",
+      "viewingDirection": "right-to-left", 
+      "canvases": [
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json", 
+          "@type": "sc:Canvas", 
+          "label": "Test 1 Canvas: 1", 
+          "height": 1800, 
+          "width": 1200, 
+          "images": [
+            {
+              "@type": "oa:Annotation", 
+              "motivation": "sc:painting", 
+              "resource": {
+                "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/resources/page1-full.png", 
+                "@type": "dctypes:Image", 
+                "height": 1800, 
+                "width": 1200
+              }, 
+              "on": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json"
+            }
+          ]
+        }, 
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json", 
+          "@type": "sc:Canvas", 
+          "label": "Test 1 Canvas: 2", 
+          "height": 1800, 
+          "width": 1200, 
+          "images": [
+            {
+              "@type": "oa:Annotation", 
+              "motivation": "sc:painting", 
+              "resource": {
+                "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/resources/page1-full.png", 
+                "@type": "dctypes:Image", 
+                "height": 1800, 
+                "width": 1200
+              }, 
+              "on": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@type": "sc:Sequence",
+      "label": "Another Order",
+      "description": "This should actually be external, but for testing we inline it",
+      "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+      "viewingHint": "continuous",
+      "viewingDirection": "left-to-right", 
+      "canvases": [
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json", 
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json"
+      ]
+    }
+  ],
+
+  "structures": [
+    {
+      "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1",
+      "@type": "sc:Range",
+      "label": "Top Range",
+      "viewingHint": "top",
+      "members": [
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+          "@type": "sc:Canvas"
+        },
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.1",
+          "@type": "sc:Range"
+        },
+        {
+          "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.2",
+          "@type": "sc:Range"
+        }
+      ]    
+    },
+    {
+      "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.1",
+      "@type": "sc:Range",
+      "label": "Intermediary Range",
+      "ranges": [
+        "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.1.1"
+      ]
+    },
+    {
+      "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.1.1",
+      "@type": "sc:Range",
+      "label": "Small Range",
+      "canvases": [
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json#xywh=0,0,10,10"
+      ]
+    },
+    {
+      "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/range/1.2",
+      "@type": "sc:Range",
+      "label": "End Range",
+      "canvases": [
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json"
+      ]
+    }
+  ]
+}

@@ -5,6 +5,8 @@
 
 import json
 import requests
+import uuid
+from collections import OrderedDict
 
 try:
         STR_TYPES = [str, unicode] #Py2
@@ -29,8 +31,17 @@ FLAGS = {
     "deref_links": {"prop": "deref_links", "default": True,
     	"description": "If true, the conversion will dereference external content resources to look for format and type."},
     "debug": {"prop": "debug", "default": False,
-    	"description": "If true, then go into a more verbose debugging mode."}
+    	"description": "If true, then go into a more verbose debugging mode."},
+    "attribution_label": {"prop": "attribution_label", "default": "Attribution",
+    	"description": "The label to use for requiredStatement mapping from attribution"}
 }
+
+
+KEY_ORDER = ["@context", "id", "type", "label", "profile", "format", "language", "value",
+	"metadata", "requiredStatement", "thumbnail", "homepage", "logo", "rights", "logo",  
+	"height", "width", "start", "viewingDirection", "behavior", "navDate", "rendering",
+	"seeAlso", "within",  "includes", "items", "structures", "annotations"]
+KEY_ORDER_HASH = dict([(KEY_ORDER[x], x) for x in range(len(KEY_ORDER))])
 
 class Upgrader(object):
 
@@ -40,12 +51,11 @@ class Upgrader(object):
 			setattr(self, info['prop'], flags.get(flag, info['default']))
 
 		self.id_type_hash = {}
-
-		self.language_properties = ['label', 'attribution', 'summary']
+		self.language_properties = ['label', 'summary']
 
 		self.all_properties = [
 			"label", "metadata", "summary", "thumbnail", "navDate",
-			"attribution", "rights", "logo", "value",
+			"requiredStatement", "rights", "logo", "value",
 			"id", "type", "format", "language", "profile", "timeMode",
 			"height", "width", "duration", "viewingDirection", "behavior",
 			"related", "rendering", "service", "seeAlso", "within",
@@ -70,28 +80,6 @@ class Upgrader(object):
 			"rights": "",
 			"seeAlso": "Dataset",
 			"within": ""
-		}
-
-		self.profile_map = {
-			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level0": "level0",
-			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level1": "level1",
-			"http://library.stanford.edu/iiif/image-api/1.1/conformance.html#level2": "level2",
-           "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level1": "level1",
-           "http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2": "level2",
-			"http://iiif.io/api/image/1/level0.json": "level0",
-			"http://iiif.io/api/image/1/level1.json": "level1",
-			"http://iiif.io/api/image/1/level2.json": "level2",
-			"http://iiif.io/api/image/2/level0.json": "level0",
-			"http://iiif.io/api/image/2/level1.json": "level1",
-			"http://iiif.io/api/image/2/level2.json": "level1",
-			"http://iiif.io/api/auth/1/kiosk": "kiosk",
-			"http://iiif.io/api/auth/1/login": "login",
-			"http://iiif.io/api/auth/1/clickthrough": "clickthrough",
-			"http://iiif.io/api/auth/1/external": "external",
-			"http://iiif.io/api/auth/0/kiosk": "kiosk",
-			"http://iiif.io/api/auth/0/login": "login",
-			"http://iiif.io/api/auth/0/clickthrough": "clickthrough",
-			"http://iiif.io/api/auth/0/external": "external"
 		}
 
 		self.content_type_map = {
@@ -120,6 +108,9 @@ class Upgrader(object):
 				val = {}
 		return val
 
+	def mint_uri(self):
+		return "https://example.org/uuid/%s" % uuid.uuid4()
+
 	def traverse(self, what):
 		new = {}
 		for (k,v) in what.items():
@@ -132,6 +123,11 @@ class Upgrader(object):
 				continue
 			elif k == 'structures':
 				# processed by Manifest directly to unflatten
+				new[k] = v
+				continue
+			elif k == "_structures":
+				# already processed sequence -> range
+				# will post process when dealing with unflattening
 				new[k] = v
 				continue
 			if type(v) == dict:
@@ -354,7 +350,7 @@ class Upgrader(object):
 		return what
 
 	def process_generic(self, what):
-
+		""" process generic IIIF properties """
 		if '@id' in what:
 			what['id'] = what['@id']
 			del what['@id']
@@ -369,8 +365,20 @@ class Upgrader(object):
 		if 'license' in what:
 			what['rights'] = what['license']
 			del what['license']
+		if 'attribution' in what:
+			label = self.do_language_map(self.attribution_label)
+			val = self.do_language_map(what['attribution'])
+			what['requiredStatement'] = {"label": {}, "value": val}
+
 		if 'viewingHint' in what:
-			what['behavior'] = what['viewingHint']
+			if not 'behavior' in what:
+				what['behavior'] = what['viewingHint']
+			else:
+				# will already be a list
+				if type(what['viewingHint']) == list:					
+					what['behavior'].extend(what['viewingHint'])
+				else:
+					what['behavior'].append(what['viewingHint'])
 			del what['viewingHint']
 		if 'description' in what:
 			if self.description_is_metadata:
@@ -402,16 +410,8 @@ class Upgrader(object):
 			del what['related']
 
 		if "profile" in what:
-			p = what['profile']
-			if type(p) == list and p[0].startswith('http://iiif.io/api/image/'):
-				# URGH embedded Image API info.
-				# Leave it alone, I think
-				pass
-			elif p in self.profile_map:
-				what['profile'] = self.profile_map[p]
-			else:
-				self.warn("Unrecognized profile: %s (continuing)" % p)
-
+			# XXX Just let it fall through?
+			pass
 		if "otherContent" in what:
 			# otherContent is already AnnotationList, so no need to inject
 			what['annotations'] = what['otherContent']
@@ -420,7 +420,6 @@ class Upgrader(object):
 		what = self.fix_languages(what)
 		what = self.fix_sets(what)
 		what = self.fix_objects(what)
-
 		return what
 
 	def process_collection(self, what):
@@ -467,16 +466,42 @@ class Upgrader(object):
 
 		# Need to test as might not be top object
 		if 'sequences' in what:
-			what['items'] = what['sequences']
+			# No more sequences!
+			seqs = what['sequences']
+			what['items'] = seqs[0]['canvases']
 			del what['sequences']
+			if len(seqs) > 1:
+				# Process to ranges
+				what['_structures'] = []
+				for s in seqs:
 
+					# Test to see if we need to crawl
+
+					rng = {"id": s.get('@id', self.mint_uri()), "type": "Range"}
+					rng['behavior'] = ['sequence']
+					rng['items'] = []
+					for c in s['canvases']:
+						if type(c) == dict:
+							rng['items'].append({"id": c['@id'], "type": "Canvas"})
+						elif type(c) in STR_TYPES:
+							rng['items'].append({"id": c, "type": "Canvas"})
+					# Copy other properties and hand off to _generic
+					del s['canvases']
+					for k in s.keys():
+						if not k in ['@id', '@type']:
+							rng[k] = s[k]
+					self.process_generic(rng)
+					what['_structures'].append(rng)
 		return what
 
 	def process_range(self, what):
 		what = self.process_generic(what)
 
 		members = what.get('members', [])
-		if 'members' in what:
+		if 'items' in what:
+			# preconfigured, move right along
+			pass
+		elif 'members' in what:
 			its = what['members']
 			del what['members']
 			nl = []
@@ -538,21 +563,6 @@ class Upgrader(object):
 
 		return what
 
-	def process_sequence(self, what):
-		what = self.process_generic(what)
-		what['items'] = what['canvases']
-		del what['canvases']
-
-		if 'startCanvas' in what:
-			v = what['startCanvas']
-			if type(v) != dict:
-				what['start'] = {'id': v, 'type': "Canvas"}
-			else:
-				v['type'] = "Canvas"
-				what['start'] = v
-			del what['startCanvas']
-
-		return what
 
 	def process_canvas(self, what):
 
@@ -657,12 +667,11 @@ class Upgrader(object):
 
 	def post_process_manifest(self, what):
 		# do ranges at this point, after everything else is traversed
-
+		tops = []
 		if 'structures' in what:
 			# Need to process from here, to have access to all info
 			# needed to unflatten them
 			rhash = {}
-			tops = []
 			for r in what['structures']:
 				new = self.fix_type(r)
 				new = self.process_range(new)
@@ -705,8 +714,12 @@ class Upgrader(object):
 									break
 						parent['items'].append(rng)
 
-
-			what['structures'] = []
+		if '_structures' in what:
+			what['structures'] = what['_structures']
+			del what['_structures']
+		if tops:
+			if not 'structures' in what:
+				what['structures'] = []
 			for t in tops:
 				if t in rhash:
 					what['structures'].append(rhash[t])
@@ -754,11 +767,28 @@ class Upgrader(object):
 		what = json.loads(data)
 		return self.process_resource(what, top)
 
+	def reorder(self, what):
+		new = {}
+		for (k,v) in what.items():
+			if type(v) == list:
+				nl = []
+				for i in v:
+					if type(i) == dict:
+						nl.append(self.reorder(i))
+					else:
+						nl.append(i)
+				new[k] = nl
+			elif type(v) == dict:
+				new[k] = self.reorder(v)
+			else:
+				new[k] = v
+		return OrderedDict(sorted(new.items(), key=lambda x: KEY_ORDER_HASH.get(x[0], 1000)))
+
 
 if __name__ == "__main__":
 
 	upgrader = Upgrader(flags={"ext_ok": False, "deref_links": False})
-	results = upgrader.process_cached('tests/input_data/manifest-services.json')
+	#results = upgrader.process_cached('tests/input_data/manifest-basic.json')
 
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/collection.json"
 	#uri = "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json"
@@ -786,9 +816,14 @@ if __name__ == "__main__":
 	#uri = "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/list/p0001-0025.json"
 	#uri = "http://www2.dhii.jp/nijl/NIJL0018/099-0014/manifest_tags.json"
 	#uri = "https://data.getty.edu/museum/api/iiif/298147/manifest.json"
-	#results = upgrader.process_uri(uri, True)
+	#uri = "https://www.e-codices.unifr.ch/metadata/iiif/csg-0730/manifest.json"
 
-	print(json.dumps(results, indent=2, sort_keys=True))
+	#results = upgrader.process_uri(uri, True)
+	results = upgrader.process_cached('tests/input_data/manifest-sequences.json')
+
+	# Now reorder
+	results = upgrader.reorder(results)
+	print(json.dumps(results, indent=2))
 
 
 

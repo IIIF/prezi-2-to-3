@@ -39,6 +39,8 @@ if __name__ == "__main__":
     else:
         v3 = upgrader.process_cached(manifest)
 
+    v3 = upgrader.reorder(v3)
+
     if args.output:
         # output to filename
         with open(args.output, 'w') as outfile:
