@@ -30,7 +30,7 @@ or run both with the following command:
 docker build -t prezi-2-to-3 . && docker run -it --rm -p 8000:80 --name upgrader prezi-2-to-3:latest
 ```
 
-Then navigating to the following page: <http://localhost:8000/index.html>.
+Then navigating to the following page: <http://localhost:8000>.
 
 ## Installing locally
 
@@ -67,7 +67,7 @@ To run the web version:
  ./twoToThreeUpgraderService.py --port 8000
 ```
 
-and navigate to <http://localhost:8000/index.html>. Note the default port if not specified is 8080.
+and navigate to <http://localhost:8000>. Note the default port if not specified is 8080.
 
 ## Using programatically
 
