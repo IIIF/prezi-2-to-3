@@ -602,9 +602,9 @@ class Upgrader(object):
 			if not what['behavior']:
 				del what['behavior']
 
-		if 'includes' in what:
+		if 'supplementary' in what:
 			# single object
-			what['includes'] = self.process_resource(what['includes'])
+			what['supplementary'] = self.process_resource(what['supplementary'])
 
 		return what
 
