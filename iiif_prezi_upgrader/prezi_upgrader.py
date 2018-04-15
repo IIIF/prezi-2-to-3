@@ -336,7 +336,7 @@ class Upgrader(object):
 		elif not 'type' in what and 'id' in what and what['id'] in self.id_type_hash:
 			what['type'] = self.id_type_hash[what['id']]
 		elif self.deref_links:
-			self.get_remote_type(what['id'])
+			self.set_remote_type(what['id'])
 		return what
 
 	def fix_objects(self, what):
