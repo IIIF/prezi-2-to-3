@@ -33,14 +33,16 @@ FLAGS = {
     "debug": {"prop": "debug", "default": False,
     	"description": "If true, then go into a more verbose debugging mode."},
     "attribution_label": {"prop": "attribution_label", "default": "Attribution",
-    	"description": "The label to use for requiredStatement mapping from attribution"}
+    	"description": "The label to use for requiredStatement mapping from attribution"},
+    "license_label": {"prop": "license_label", "default": "Rights/License",
+    	"description": "The label to use for non-conforming license URIs mapped into metadata"}
 }
 
 KEY_ORDER = ["@context", "id", "@id", "type", "@type", "motivation", "label", "profile", 
 	"format", "language", "value", "metadata", "requiredStatement", "thumbnail",
 	"homepage", "logo", "rights", "logo", "height", "width", "start", 
 	"viewingDirection", "behavior", "navDate", "rendering", "seeAlso", 
-	"within",  "includes", "items", "structures", "annotations"]
+	"partOf",  "includes", "items", "structures", "annotations"]
 KEY_ORDER_HASH = dict([(KEY_ORDER[x], x) for x in range(len(KEY_ORDER))])
 
 class Upgrader(object):
@@ -59,7 +61,7 @@ class Upgrader(object):
 			"requiredStatement", "rights", "logo", "value",
 			"id", "type", "format", "language", "profile", "timeMode",
 			"height", "width", "duration", "viewingDirection", "behavior",
-			"homepage", "rendering", "service", "seeAlso", "within",
+			"homepage", "rendering", "service", "seeAlso", "partOf",
 			"start", "includes", "items", "structures", "annotations"]
 
 		self.annotation_properties = [
@@ -68,8 +70,8 @@ class Upgrader(object):
 		]
 
 		self.set_properties = [
-			"thumbnail", "rights", "logo", "behavior",
-			"rendering", "service", "seeAlso", "within"
+			"thumbnail", "logo", "behavior",
+			"rendering", "service", "seeAlso", "partOf"
 		]
 
 		self.object_property_types = {
@@ -77,9 +79,8 @@ class Upgrader(object):
 			"logo":"Image",
 			"related": "",
 			"rendering": "",
-			"rights": "",
 			"seeAlso": "Dataset",
-			"within": ""
+			"partOf": ""
 		}
 
 		self.content_type_map = {
@@ -247,7 +248,14 @@ class Upgrader(object):
 					try:
 						new[i['@language']].append(i['@value'])
 					except:
-						new[i['@language']] = [i['@value']]
+						try:
+							new[i['@language']] = [i['@value']]
+						except KeyError:
+							# Just @value, no @langauge (ucd.ie)
+							if '@none' in new:
+								new['@none'].append(i['@value'])
+							else:
+								new['@none'] = [i['@value']]
 				elif type(i) == list:
 					pass
 				elif type(i) == dict:
@@ -351,7 +359,26 @@ class Upgrader(object):
 				raise ValueError(what['id'])
 
 		if 'license' in what:
-			what['rights'] = what['license']
+			# License went from many to single
+			# Also requires CC or RSS, otherwise extension
+			# Put others into metadata
+			lic = what['license']
+			if type(lic) != list:
+				lic = [lic]
+			done = False
+			for l in lic:
+				if type(l) == dict:
+					l = l['@id']
+				if not done and (l.find('creativecommons.org/') >-1 or l.find('rightsstatements.org/') > -1):
+					# match
+					what['rights'] = l	
+					done = True
+				else:				
+					# fix_languages below will correct these to langMaps
+					licstmt = {"label": self.license_label, "value": l}
+					md = what.get('metadata', [])
+					md.append(licstmt)
+					what['metadata'] = md
 			del what['license']
 		if 'attribution' in what:
 			label = self.do_language_map(self.attribution_label)
@@ -402,6 +429,10 @@ class Upgrader(object):
 			# otherContent is already AnnotationList, so no need to inject
 			what['annotations'] = what['otherContent']
 			del what['otherContent']
+
+		if "within" in what:
+			what['partOf'] = what['within']
+			del what['within']
 
 		what = self.fix_languages(what)
 		what = self.fix_sets(what)
@@ -544,10 +575,10 @@ class Upgrader(object):
 			if type(v) == list and len(v) == 1:
 				v = v[0]
 			if type(v) != dict:
-				what['includes'] = {'id': v, 'type': "AnnotationCollection"}
+				what['supplementary'] = {'id': v, 'type': "AnnotationCollection"}
 			else:
 				v['type'] = "AnnotationCollection"
-				what['includes'] = v
+				what['supplementary'] = v
 			del what['contentLayer']
 
 		# Remove redundant 'top' Range
@@ -694,10 +725,11 @@ class Upgrader(object):
 				rng['items'] = newits
 
 				# Harvard has a strange within based pattern
-				if 'within' in rng:
+				# which will now be mapped to partOf
+				if 'partOf' in rng:
 					tops.remove(rng['id'])
-					parid = rng['within'][0]['id']
-					del rng['within']
+					parid = rng['partOf'][0]['id']
+					del rng['partOf']
 					parent = rhash.get(parid, None)
 					if not parent:
 						# Just drop it on the floor?
@@ -800,7 +832,6 @@ if __name__ == "__main__":
 	#uri = "https://ocr.lib.ncsu.edu/ocr/nu/nubian-message-1992-11-30_0010/nubian-message-1992-11-30_0010-annotation-list-paragraph.json"
 	#uri = "http://iiif.harvardartmuseums.org/manifests/object/299843"
 	#uri = "https://purl.stanford.edu/qm670kv1873/iiif/manifest.json"
-	#uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
 	#uri = "http://dams.llgc.org.uk/iiif/newspaper/issue/3320640/manifest.json"
 	#uri = "http://manifests.ydc2.yale.edu/manifest/Admont43"
 	#uri = "https://manifests.britishart.yale.edu/manifest/1474"

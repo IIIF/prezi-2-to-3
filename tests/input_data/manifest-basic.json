@@ -17,7 +17,10 @@
   "viewingHint": "paged",
   "navDate": "1900-01-01T00:00:00Z",
 
-  "license": "http://iiif.io/event/conduct/",
+  "license": [
+    "http://iiif.io/event/conduct/",
+    "https://creativecommons.org/licenses/by/4.0/"
+  ],
   "logo": "http://iiif.io/img/logo-iiif-34x30.png",
   "attribution": "Provided by Testing Organization",
 

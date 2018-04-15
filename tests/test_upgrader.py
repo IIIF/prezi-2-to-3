@@ -1,5 +1,6 @@
 import unittest
 import json
+import os
 
 from iiif_prezi_upgrader import prezi_upgrader
 
@@ -52,8 +53,16 @@ class TestManifest(unittest.TestCase):
 
 	def test_license(self):
 		lic = "http://iiif.io/event/conduct/"
+		lic2 = "https://creativecommons.org/licenses/by/4.0/"
 		self.assertTrue('rights' in self.results)
-		self.assertEqual(self.results['rights'][0]['id'], lic)
+		self.assertEqual(self.results['rights'], lic2)
+		self.assertTrue('metadata' in self.results)
+		# Find lic as a value in @none
+		found = False
+		for pair in self.results['metadata']:			
+			if '@none' in pair['value'] and lic in pair['value']['@none']:
+				found = True
+		self.assertTrue(found)
 
 	def test_viewingHint(self):
 		self.assertTrue('behavior' in self.results)
@@ -66,7 +75,6 @@ class TestManifest(unittest.TestCase):
 
 	def test_uri_string(self):
 		self.assertEqual(type(self.results['rendering'][0]), dict)
-		self.assertEqual(type(self.results['rights'][0]), dict)
 		self.assertEqual(type(self.results['start']), dict)
 
 	def test_languagemap(self):
@@ -266,8 +274,24 @@ class TestRemote(unittest.TestCase):
 			"https://d.lib.ncsu.edu/collections/catalog/nubian-message-1992-11-30/manifest",
 			"https://sinai-images.library.ucla.edu/iiif/ark%3A%252F21198%252Fz1bc4wfw/manifest"
 		]
+
+		uris = []
 		
 		for u in uris:
 			flags = {"deref_links": False}
 			up = prezi_upgrader.Upgrader(flags)
 			res = up.process_uri(u)
+
+class TestRealData(unittest.TestCase):
+
+	def test_real_data(self):
+		files = os.listdir('tests/remote_cache')
+		flags= {"ext_ok": False, "deref_links": False}
+		for f in files:
+			fn = os.path.join('tests/remote_cache', f)
+			upgrader = prezi_upgrader.Upgrader(flags)
+			try:
+				upgrader.process_cached(fn)
+			except:
+				print("Failed to process %s" % fn)
+				raise
