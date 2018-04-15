@@ -27,16 +27,21 @@
   "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
 
   "seeAlso": {
-    "id": "http://example.org/description/record.xml",
+    "@id": "http://example.org/description/record.xml",
     "format": "text/xml"
   },
   "rendering": [
     "http://example.org/docs/record.doc",
     {
-      "id": "http://example.org/docs/record.pdf",
+      "@id": "http://example.org/docs/record.pdf",
       "format": "application/pdf"
     }
   ],
+
+  "related": {
+    "@id": "http://example.org/somewhere/foo.html",
+    "format": "text/html"
+  },
 
   "sequences": [
     {

@@ -77,7 +77,7 @@ class Upgrader(object):
 		self.object_property_types = {
 			"thumbnail": "Image",
 			"logo":"Image",
-			"related": "",
+			"homepage": "",
 			"rendering": "",
 			"seeAlso": "Dataset",
 			"partOf": ""
@@ -301,47 +301,55 @@ class Upgrader(object):
 				what[p] = v
 		return what
 
+	def set_remote_type(self, what):
+		# do a HEAD on the resource and look at Content-Type
+		try:
+			h = requests.head(what['id'])
+		except:
+			# dummy URI
+			h = None
+		if h and h.status_code == 200:
+			ct = h.headers['content-type']
+			what['format'] = ct  # as we have it...
+			ct = ct.lower()
+			first = ct.split('/')[0]
+
+			if first in self.content_type_map:
+				what['type'] = self.content_type_map[first]
+			elif ct in self.content_type_map:
+				what['type'] = self.content_type_map[ct]
+			elif ct.startswith("application/json") or \
+				ct.startswith("application/ld+json"):
+				# Try and fetch and look for a type!
+				data = self.retrieve_resource(v['id'])
+				if 'type' in data:
+					what['type'] = data['type']
+				elif '@type' in data:
+					data = self.fix_type(data)
+					what['type'] = data['type']		
+
+	def fix_object(self, what, typ):
+		if type(what) != dict:
+			what = {'id': what}
+		if not 'type' in what and typ:
+			what['type'] = typ
+		elif not 'type' in what and 'id' in what and what['id'] in self.id_type_hash:
+			what['type'] = self.id_type_hash[what['id']]
+		elif self.deref_links:
+			self.get_remote_type(what['id'])
+		return what
+
 	def fix_objects(self, what):
 		for (p,typ) in self.object_property_types.items():
 			if p in what:
 				new = []
-				for v in what[p]:
-					if not type(v) == dict:
-						v = {'id':v}
-					if not 'type' in v and typ:
-						v['type'] = typ
-					elif not 'type' in v and 'id' in v and v['id'] in self.id_type_hash:
-						v['type'] = self.id_type_hash[v['id']]
-					elif self.deref_links:
-						# do a HEAD on the resource and look at Content-Type
-						try:
-							h = requests.head(v['id'])
-						except:
-							# dummy URI
-							h = None
-						if h and h.status_code == 200:
-							ct = h.headers['content-type']
-							v['format'] = ct  # as we have it...
-							ct = ct.lower()
-							first = ct.split('/')[0]
-
-							if first in self.content_type_map:
-								v['type'] = self.content_type_map[first]
-							elif ct in self.content_type_map:
-								v['type'] = self.content_type_map[ct]
-							elif ct.startswith("application/json") or \
-								ct.startswith("application/ld+json"):
-								# Try and fetch and look for a type!
-								data = self.retrieve_resource(v['id'])
-								if 'type' in data:
-									v['type'] = data['type']
-								elif '@type' in data:
-									data = self.fix_type(data)
-									v['type'] = data['type']
-
-					if not 'type' in v:
-						self.warn("Don't know type for %s: %s" % (p, what[p]))
-					new.append(v)
+				# Assumes list :(
+				if p in self.set_properties:
+					for v in what[p]:
+						nv = self.fix_object(v, typ)
+						new.append(nv)
+				else:
+					new = self.fix_object(what[p], typ)
 				what[p] = new
 		return what
 
@@ -408,21 +416,26 @@ class Upgrader(object):
 				what['summary'] = what['description']
 			del what['description']
 		if 'related' in what:
-			rel = what['related']
-			if self.related_is_metadata:
-				md = what.get('metadata', [])
-				# NB this must happen before fix_languages
-				label = "Related Document"
-				if type(rel) == dict:
-					uri = rel['@id']
-					if 'label' in rel:
-						label = rel['label']
+			rels = what['related']
+			if type(rels) != list:
+				rels = [rels]
+			for rel in rels:
+				if not self.related_is_metadata and rel == rels[0]:
+					# Assume first is homepage, rest to metadata
+					if type(rel) != dict:
+						rel = {'@id': rel}
+					what['homepage'] = rel
 				else:
-					uri = rel
-				md.append({"label": u"Related", "value": "<a href='%s'>%s</a>" % (uri, label) })
-				what['metadata'] = md
-			else:
-				what['homepage'] = {"id": what['related'], "type": "Text"}
+					if type(rel) == dict:
+						uri = rel['@id']
+						if 'label' in rel:
+							label = rel['label']
+					else:
+						uri = rel
+					md = what.get('metadata', [])
+					# NB this must happen before fix_languages
+					md.append({"label": u"Related", "value": "<a href='%s'>%s</a>" % (uri, label) })
+					what['metadata'] = md
 			del what['related']
 
 		if "otherContent" in what:
