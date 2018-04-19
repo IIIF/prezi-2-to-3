@@ -3,45 +3,11 @@
   "@id": "http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json", 
   "@type": "sc:Manifest", 
   "label": "Manifest Label",
-  "metadata": [{"label": "MD Label 1", "value": "MD Value 1"}, 
-    {"label": "MD Label 2", "value": ["MD Value 2.1", "MD Value 2.2"]},
-    {"label": "MD Label 3", "value": [
-      {"@language": "en", "@value": "MD Value 3.en"},
-      {"@language": "fr", "@value": "MD Value 3.fr"}
-    ]} 
-  ],
   "description": "This is a description of the Manifest",
-  "thumbnail": "http://iiif.io/img/logo-iiif-34x30.png",
 
   "viewingDirection": "left-to-right",
   "viewingHint": "paged",
-  "navDate": "1900-01-01T00:00:00Z",
-
-  "license": [
-    "http://iiif.io/event/conduct/",
-    "https://creativecommons.org/licenses/by/4.0/"
-  ],
-  "logo": "http://iiif.io/img/logo-iiif-34x30.png",
-  "attribution": "Provided by Testing Organization",
-
   "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
-
-  "seeAlso": {
-    "@id": "http://example.org/description/record.xml",
-    "format": "text/xml"
-  },
-  "rendering": [
-    "http://example.org/docs/record.doc",
-    {
-      "@id": "http://example.org/docs/record.pdf",
-      "format": "application/pdf"
-    }
-  ],
-
-  "related": {
-    "@id": "http://example.org/somewhere/foo.html",
-    "format": "text/html"
-  },
 
   "sequences": [
     {
@@ -91,8 +57,18 @@
             }
           ]
         }
-
-
+      ]
+    },
+    {
+      "@type": "sc:Sequence",
+      "label": "Another Order",
+      "description": "This should actually be external, but for testing we inline it",
+      "startCanvas": "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json",
+      "viewingHint": "continuous",
+      "viewingDirection": "left-to-right", 
+      "canvases": [
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json", 
+        "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c2.json"
       ]
     }
   ],

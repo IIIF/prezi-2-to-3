@@ -43,11 +43,12 @@ class Service(object):
 
     def return_json(self, js):
         response.content_type = "application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\""
-        return json.dumps(js, indent=2, sort_keys=True)
+        return json.dumps(js, indent=2)
 
     def do_upgrade(self, js, flags={}):
         up = Upgrader(flags=flags)
         results = up.process_resource(js, top=True)
+        results = up.reorder(results)
         return self.return_json(results)
 
     def do_POST_upgrade(self):

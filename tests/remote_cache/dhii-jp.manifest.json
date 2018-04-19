@@ -1,0 +1,1618 @@
+{
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@type": "sc:Manifest",
+    "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/manifest.json",
+    "label": "唐糸草紙",
+    "metadata": [
+        {
+            "label": "Author",
+            "value": ""
+        },
+        {
+            "label": "published",
+            "value": [
+                {
+                    "@value": "",
+                    "@language": "ja"
+                }
+            ]
+        },
+        {
+            "label": "Source",
+            "value": "From: IDR in NII http://www.nii.ac.jp/dsc/idr/nijl/nijl.html"
+        }
+    ],
+    "description": "",
+    "viewingDirection": "right-to-left",
+    "viewingHint": "paged",
+    "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "http://www.nijl.ac.jp/index_e.html",
+    "logo": "http://www.nijl.ac.jp/pages/images/footer_icon.gif",
+    "related": {
+        "@id": "http://www.nii.ac.jp/dsc/idr/nijl/nijl.html",
+        "format": "text/html"
+    },
+    "within": "http://www.nii.ac.jp/dsc/idr/nijl/nijl.html",
+    "sequences": [
+        {
+            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/sequence.json",
+            "@type": "sc:Sequence",
+            "label": "Current Page Order",
+            "canvases": [
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p1",
+                    "@type": "sc:Canvas",
+                    "label": "p. 1",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano1",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00000.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00000.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p1"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p2",
+                    "@type": "sc:Canvas",
+                    "label": "p. 2",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano2",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00001.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00001.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p2"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p3",
+                    "@type": "sc:Canvas",
+                    "label": "p. 3",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano3",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00002.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00002.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p3"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p4",
+                    "@type": "sc:Canvas",
+                    "label": "p. 4",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano4",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00003.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00003.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p4"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p5",
+                    "@type": "sc:Canvas",
+                    "label": "p. 5",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano5",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00004.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00004.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p5"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p5.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p6",
+                    "@type": "sc:Canvas",
+                    "label": "p. 6",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano6",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00005.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00005.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p6"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p6.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p7",
+                    "@type": "sc:Canvas",
+                    "label": "p. 7",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano7",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00006.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00006.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p7"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p7.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p8",
+                    "@type": "sc:Canvas",
+                    "label": "p. 8",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano8",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00007.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00007.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p8"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p8.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p9",
+                    "@type": "sc:Canvas",
+                    "label": "p. 9",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano9",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00008.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00008.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p9"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p9.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p10",
+                    "@type": "sc:Canvas",
+                    "label": "p. 10",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano10",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00009.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00009.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p10"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p10.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p11",
+                    "@type": "sc:Canvas",
+                    "label": "p. 11",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano11",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00010.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00010.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p11"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p11.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p12",
+                    "@type": "sc:Canvas",
+                    "label": "p. 12",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano12",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00011.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00011.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p12"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p12.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p13",
+                    "@type": "sc:Canvas",
+                    "label": "p. 13",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano13",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00012.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00012.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p13"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p13.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p14",
+                    "@type": "sc:Canvas",
+                    "label": "p. 14",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano14",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00013.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00013.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p14"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p14.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p15",
+                    "@type": "sc:Canvas",
+                    "label": "p. 15",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano15",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00014.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00014.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p15"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p15.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p16",
+                    "@type": "sc:Canvas",
+                    "label": "p. 16",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano16",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00015.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00015.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p16"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p16.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p17",
+                    "@type": "sc:Canvas",
+                    "label": "p. 17",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano17",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00016.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00016.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p17"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p17.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p18",
+                    "@type": "sc:Canvas",
+                    "label": "p. 18",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano18",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00017.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00017.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p18"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p18.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p19",
+                    "@type": "sc:Canvas",
+                    "label": "p. 19",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano19",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00018.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00018.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p19"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p20",
+                    "@type": "sc:Canvas",
+                    "label": "p. 20",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano20",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00019.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00019.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p20"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p21",
+                    "@type": "sc:Canvas",
+                    "label": "p. 21",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano21",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00020.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00020.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p21"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p22",
+                    "@type": "sc:Canvas",
+                    "label": "p. 22",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano22",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00021.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00021.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p22"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p23",
+                    "@type": "sc:Canvas",
+                    "label": "p. 23",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano23",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00022.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00022.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p23"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p24",
+                    "@type": "sc:Canvas",
+                    "label": "p. 24",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano24",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00023.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00023.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p24"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p25",
+                    "@type": "sc:Canvas",
+                    "label": "p. 25",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano25",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00024.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00024.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p25"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p25.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p26",
+                    "@type": "sc:Canvas",
+                    "label": "p. 26",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano26",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00025.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00025.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p26"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p26.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p27",
+                    "@type": "sc:Canvas",
+                    "label": "p. 27",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano27",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00026.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00026.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p27"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p27.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p28",
+                    "@type": "sc:Canvas",
+                    "label": "p. 28",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano28",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00027.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00027.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p28"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p28.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p29",
+                    "@type": "sc:Canvas",
+                    "label": "p. 29",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano29",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00028.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00028.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p29"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p29.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p30",
+                    "@type": "sc:Canvas",
+                    "label": "p. 30",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano30",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00029.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00029.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p30"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p30.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p31",
+                    "@type": "sc:Canvas",
+                    "label": "p. 31",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano31",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00030.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00030.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p31"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p31.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p32",
+                    "@type": "sc:Canvas",
+                    "label": "p. 32",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano32",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00031.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00031.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p32"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p32.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p33",
+                    "@type": "sc:Canvas",
+                    "label": "p. 33",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano33",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00032.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00032.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p33"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p33.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p34",
+                    "@type": "sc:Canvas",
+                    "label": "p. 34",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano34",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00033.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00033.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p34"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p34.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p35",
+                    "@type": "sc:Canvas",
+                    "label": "p. 35",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano35",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00034.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00034.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p35"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p35.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p36",
+                    "@type": "sc:Canvas",
+                    "label": "p. 36",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano36",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00035.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00035.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p36"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p36.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p37",
+                    "@type": "sc:Canvas",
+                    "label": "p. 37",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano37",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00036.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00036.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p37"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p37.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p38",
+                    "@type": "sc:Canvas",
+                    "label": "p. 38",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano38",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00037.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00037.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p38"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p38.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p39",
+                    "@type": "sc:Canvas",
+                    "label": "p. 39",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano39",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00038.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00038.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p39"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p39.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p40",
+                    "@type": "sc:Canvas",
+                    "label": "p. 40",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano40",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00039.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00039.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p40"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p40.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p41",
+                    "@type": "sc:Canvas",
+                    "label": "p. 41",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano41",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00040.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00040.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p41"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p41.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p42",
+                    "@type": "sc:Canvas",
+                    "label": "p. 42",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano42",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00041.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00041.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p42"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p42.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p43",
+                    "@type": "sc:Canvas",
+                    "label": "p. 43",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano43",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00042.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00042.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p43"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p43.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p44",
+                    "@type": "sc:Canvas",
+                    "label": "p. 44",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano44",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00043.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00043.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p44"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p44.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p45",
+                    "@type": "sc:Canvas",
+                    "label": "p. 45",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano45",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00044.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00044.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p45"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p45.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p46",
+                    "@type": "sc:Canvas",
+                    "label": "p. 46",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano46",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00045.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00045.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p46"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p46.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p47",
+                    "@type": "sc:Canvas",
+                    "label": "p. 47",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano47",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00046.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00046.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p47"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "http://www2.dhii.jp/nijl/NIJL0018/099-0014/list/p47.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p48",
+                    "@type": "sc:Canvas",
+                    "label": "p. 48",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano48",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00047.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00047.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p48"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p49",
+                    "@type": "sc:Canvas",
+                    "label": "p. 49",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano49",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00048.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00048.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p49"
+                        }
+                    ]
+                },
+                {
+                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p50",
+                    "@type": "sc:Canvas",
+                    "label": "p. 50",
+                    "width": 5616,
+                    "height": 3744,
+                    "images": [
+                        {
+                            "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/ano50",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00049.jpg/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 5616,
+                                "height": 3744,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "http://www2.dhii.jp/loris/NIJL0018/099-0014/099-0014-00049.jpg",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "http://www2.dhii.jp/loris/NIJL0018/099-0014/p50"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "seeAlso": "http://www2.dhii.jp/nijl_opendata/NIJL0018/099-0014/"
+}

@@ -1,0 +1,77 @@
+{
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@type": "sc:Manifest",
+    "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/manifest.json",
+    "label": "大正新脩大藏經図像部第12b02巻",
+    "metadata": [
+        {
+            "label": "Author",
+            "value": "高楠順次郎"
+        },
+        {
+            "label": "published",
+            "value": [
+                {
+                    "@value": "大蔵出版",
+                    "@language": "ja"
+                }
+            ]
+        },
+        {
+            "label": "Source",
+            "value": "大正新脩大藏經　図像部"
+        },
+        {
+            "label": "manifest URI",
+            "value": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/manifest.json"
+        }
+    ],
+    "description": "大正新脩大藏經図像部",
+    "viewingDirection": "right-to-left",
+    "viewingHint": "paged",
+    "license": "http://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "大蔵出版(Daizo shuppan) and SAT大蔵経テキストデータベース研究会(SAT Daizōkyō Text Database Committee) ",
+    "logo": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/satlogo80.png",
+    "sequences": [
+        {
+            "@id": "https://dzkimgs.l.u-tokyo.ac.jp/zuzoubu/12b02/sequence.json",
+            "@type": "sc:Sequence",
+            "label": "Current Page Order",
+            "canvases": [
+                {
+                    "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/p0001-0025",
+                    "@type": "sc:Canvas",
+                    "label": "",
+                    "width": 22779,
+                    "height": 30000,
+                    "images": [
+                        {
+                            "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/ano0001-0025",
+                            "@type": "oa:Annotation",
+                            "motivation": "sc:painting",
+                            "resource": {
+                                "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiifimgs/zuzoubu/12b02/0001-0025.tif/full/full/0/default.jpg",
+                                "@type": "dctypes:Image",
+                                "format": "image/jpeg",
+                                "width": 22779,
+                                "height": 30000,
+                                "service": {
+                                    "@context": "http://iiif.io/api/image/2/context.json",
+                                    "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiifimgs/zuzoubu/12b02/0001-0025.tif",
+                                    "profile": "http://iiif.io/api/image/2/level1.json"
+                                }
+                            },
+                            "on": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/p0001-0025"
+                        }
+                    ],
+                    "otherContent": [
+                        {
+                            "@id": "https://dzkimgs.l.u-tokyo.ac.jp/iiif/zuzoubu/12b02/list/p0001-0025.json",
+                            "@type": "sc:AnnotationList"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

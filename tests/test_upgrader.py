@@ -1,5 +1,6 @@
 import unittest
 import json
+import os
 
 from iiif_prezi_upgrader import prezi_upgrader
 
@@ -32,15 +33,14 @@ class TestManifest(unittest.TestCase):
 		self.assertEqual(self.results['id'], \
 			"http://iiif.io/api/presentation/2.1/example/fixtures/1/manifest.json")
 		self.assertTrue('id' in self.results['structures'][0])
-		self.assertTrue('id' in self.results['items'][0]['items'][0])
+		self.assertTrue('id' in self.results['items'][0])
 
 	def test_type(self):
 		# Also tests values of type
 		self.assertTrue('type' in self.results)
 		self.assertEqual(self.results['type'], "Manifest")
 		self.assertTrue('type' in self.results['items'][0])
-		self.assertEqual(self.results['items'][0]['type'], 'Sequence')
-		cvs = self.results['items'][0]['items'][0]
+		cvs = self.results['items'][0]
 		self.assertEqual(cvs['type'], 'Canvas')
 		self.assertEqual(cvs['items'][0]['type'], "AnnotationPage")
 		self.assertEqual(cvs['items'][0]['items'][0]['type'], "Annotation")
@@ -49,21 +49,24 @@ class TestManifest(unittest.TestCase):
 		cvs = "http://iiif.io/api/presentation/2.1/example/fixtures/canvas/1/c1.json"
 		self.assertTrue('start' in self.results)
 		self.assertEqual(self.results['start']['id'], cvs)
-		self.assertTrue('start' in self.results['items'][0])
-		self.assertEqual(self.results['items'][0]['start']['id'], cvs)
 		self.assertEqual(self.results['start']['type'], 'Canvas')
 
 	def test_license(self):
 		lic = "http://iiif.io/event/conduct/"
+		lic2 = "https://creativecommons.org/licenses/by/4.0/"
 		self.assertTrue('rights' in self.results)
-		self.assertEqual(self.results['rights'][0]['id'], lic)
+		self.assertEqual(self.results['rights'], lic2)
+		self.assertTrue('metadata' in self.results)
+		# Find lic as a value in @none
+		found = False
+		for pair in self.results['metadata']:			
+			if '@none' in pair['value'] and lic in pair['value']['@none']:
+				found = True
+		self.assertTrue(found)
 
 	def test_viewingHint(self):
 		self.assertTrue('behavior' in self.results)
 		self.assertEqual(self.results['behavior'], ["paged"])
-		self.assertTrue('behavior' in self.results['items'][0])
-		self.assertEqual(self.results['items'][0]['behavior'], ["paged"])
-
 
 	def test_arrays(self):
 		self.assertEqual(type(self.results['behavior']), list)
@@ -72,7 +75,6 @@ class TestManifest(unittest.TestCase):
 
 	def test_uri_string(self):
 		self.assertEqual(type(self.results['rendering'][0]), dict)
-		self.assertEqual(type(self.results['rights'][0]), dict)
 		self.assertEqual(type(self.results['start']), dict)
 
 	def test_languagemap(self):
@@ -128,7 +130,6 @@ class TestManifest(unittest.TestCase):
 		self.assertTrue("items" in rng['items'][2])
 
 
-
 ###
 ### Annotation Tests
 ###
@@ -139,7 +140,7 @@ class TestAnnotations(unittest.TestCase):
 		flags= {"ext_ok": False, "deref_links": False}
 		self.upgrader = prezi_upgrader.Upgrader(flags)
 		self.results = self.upgrader.process_cached('tests/input_data/manifest-annos.json')
-		self.annotations = self.results['items'][0]['items'][0]['items'][0]['items']
+		self.annotations = self.results['items'][0]['items'][0]['items']
 
 	def test_body(self):
 		anno = self.annotations[0]
@@ -195,7 +196,6 @@ class TestAnnotations(unittest.TestCase):
 ###
 
 
-
 class TestServices(unittest.TestCase):
 
 	def setUp(self):
@@ -210,36 +210,33 @@ class TestServices(unittest.TestCase):
 		self.assertEqual(type(manifest['service']), list)
 		svc = manifest['service'][0]
 		self.assertTrue(not '@context' in svc)
-		self.assertEqual(svc['id'], "http://example.org/services/identifier/search")
-		self.assertEqual(svc['type'], "SearchService1")
+		self.assertEqual(svc['@id'], "http://example.org/services/identifier/search")
+		self.assertEqual(svc['@type'], "SearchService1")
 		self.assertTrue('service' in svc)
-		self.assertEqual(svc['service'][0]['type'], "AutoCompleteService1")
+		self.assertEqual(svc['service'][0]['@type'], "AutoCompleteService1")
 
 	def test_image(self):
-		svc = self.results['items'][0]['items'][0]['items'][0]['items'][0]['body']['service'][0]
-		self.assertTrue('id' in svc)
-		self.assertTrue('type' in svc)
-		self.assertEqual(svc['type'], "ImageService2")
+		svc = self.results['items'][0]['items'][0]['items'][0]['body']['service'][0]
+		self.assertTrue('@id' in svc)
+		self.assertTrue('@type' in svc)
+		self.assertEqual(svc['@type'], "ImageService2")
 		self.assertTrue('profile' in svc)
-		self.assertEqual(svc['profile'], 'level1')
 
 	def test_auth(self):
-		svc = self.results['items'][0]['items'][0]['items'][0]['items'][0]['body']['service'][0]['service'][0]
-		self.assertTrue('id' in svc)
-		self.assertTrue('type' in svc)
-		self.assertEqual(svc['type'], "AuthCookieService1")
+		svc = self.results['items'][0]['items'][0]['items'][0]['body']['service'][0]['service'][0]
+		self.assertTrue('@id' in svc)
+		self.assertTrue('@type' in svc)
+		self.assertEqual(svc['@type'], "AuthCookieService1")
 		self.assertTrue('profile' in svc)
-		self.assertEqual(svc['profile'], 'login')
 		self.assertTrue('service' in svc)
 		token = svc['service'][0]
-		self.assertTrue('id' in token)
-		self.assertTrue('type' in token)
-		self.assertEqual(token['type'], "AuthTokenService1")
+		self.assertTrue('@id' in token)
+		self.assertTrue('@type' in token)
+		self.assertEqual(token['@type'], "AuthTokenService1")
 		logout = svc['service'][1]
-		self.assertTrue('id' in logout)
-		self.assertTrue('type' in logout)
-		self.assertEqual(logout['type'], "AuthLogoutService1")
-
+		self.assertTrue('@id' in logout)
+		self.assertTrue('@type' in logout)
+		self.assertEqual(logout['@type'], "AuthLogoutService1")
 
 ###
 ### Collection Tests
@@ -277,8 +274,24 @@ class TestRemote(unittest.TestCase):
 			"https://d.lib.ncsu.edu/collections/catalog/nubian-message-1992-11-30/manifest",
 			"https://sinai-images.library.ucla.edu/iiif/ark%3A%252F21198%252Fz1bc4wfw/manifest"
 		]
+
+		uris = []
 		
 		for u in uris:
 			flags = {"deref_links": False}
 			up = prezi_upgrader.Upgrader(flags)
 			res = up.process_uri(u)
+
+class TestRealData(unittest.TestCase):
+
+	def test_real_data(self):
+		files = os.listdir('tests/remote_cache')
+		flags= {"ext_ok": False, "deref_links": False}
+		for f in files:
+			fn = os.path.join('tests/remote_cache', f)
+			upgrader = prezi_upgrader.Upgrader(flags)
+			try:
+				upgrader.process_cached(fn)
+			except:
+				print("Failed to process %s" % fn)
+				raise
