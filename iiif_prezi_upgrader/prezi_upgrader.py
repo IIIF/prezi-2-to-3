@@ -744,6 +744,7 @@ class Upgrader(object):
 			what['homepage']['type'] = "Text"
 
 		# drop empty values
+		what2 = {}
 		for (k,v) in what.items():
 			if type(v) == list:
 				new = []
@@ -751,10 +752,10 @@ class Upgrader(object):
 					if vi:
 						new.append(vi)
 				v = new
-			if not v:
-				del what[k]
+			if v:
+				what2[k] = v
 
-		return what
+		return what2
 
 	def post_process_manifest(self, what):
 
