@@ -331,13 +331,42 @@ class Upgrader(object):
 	def fix_object(self, what, typ):
 		if type(what) != dict:
 			what = {'id': what}
+
+		if 'id' in what:
+			myid = what['id']
+		elif '@id' in what:
+			myid = what['@id']
+		else:
+			myid = ''
+
 		if not 'type' in what and typ:
 			what['type'] = typ
-		elif not 'type' in what and 'id' in what:
-			if what['id'] in self.id_type_hash:
-				what['type'] = self.id_type_hash[what['id']]
+		elif not 'type' in what and myid:
+			if myid in self.id_type_hash:
+				what['type'] = self.id_type_hash[myid]
 			elif self.deref_links:
-				self.set_remote_type(what['id'])
+				self.set_remote_type(myid)
+			else:
+				# Try to guess from format
+				if 'format' in what:
+					if what['format'].startswith('image/'):
+						what['type'] = "Image"
+					elif what['format'].startswith('video/'):
+						what['type'] = "Video"
+					elif what['format'].startswith('audio/'):
+						what['type'] = "Audio"
+					elif what['format'].startswith('text/'):
+						what['type'] = "Text"
+					elif what['format'].startswith('application/pdf'):
+						what['type'] = "Text"
+
+				# Try to guess from URI
+				if not 'type' in what and myid.find('.htm') > -1:
+					what['type'] = "Text"
+				elif not 'type' in what:
+					# Failed to set type, but it's required
+					# We won't validate because of this
+					pass
 		return what
 
 	def fix_objects(self, what):
@@ -359,6 +388,10 @@ class Upgrader(object):
 		if '@id' in what:
 			what['id'] = what['@id']
 			del what['@id']
+		else:
+			# Add in id with a vanilla UUID
+			what['id'] = self.mint_uri()
+
 		# @type already processed
 		# Now add to id/type hash for lookups
 		if 'id' in what and 'type' in what:
@@ -705,9 +738,29 @@ class Upgrader(object):
 		return what
 
 	def post_process_generic(self, what):
-		return what
+
+		# test known properties of objects for type
+		if 'homepage' in what and not 'type' in what['homepage']:
+			what['homepage']['type'] = "Text"
+
+		# drop empty values
+		what2 = {}
+		for (k,v) in what.items():
+			if type(v) == list:
+				new = []
+				for vi in v:
+					if vi:
+						new.append(vi)
+				v = new
+			if v:
+				what2[k] = v
+
+		return what2
 
 	def post_process_manifest(self, what):
+
+		what = self.post_process_generic(what)
+
 		# do ranges at this point, after everything else is traversed
 		tops = []
 		if 'structures' in what:
@@ -789,7 +842,7 @@ class Upgrader(object):
 
 		if top:
 			# Add back in the v3 context
-			if orig_context != "http://iiif.io/api/presentation/2/context.json":
+			if type(orig_context) == list:
 				# XXX process extensions
 				pass
 			else:
